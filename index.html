@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chenshuhao (Cody) Qin | Portfolio</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-color: #0a0a0a;
+            --card-bg: #171717;
+            --text-main: #ffffff;
+            --text-secondary: #a1a1aa;
+            --accent: #3b82f6; /* Blue for tech/professionalism */
+            --accent-hover: #60a5fa;
+            --apple-highlight: #f59e0b; /* Amber for awards */
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        a { text-decoration: none; color: inherit; transition: 0.3s; }
+        ul { list-style: none; }
+
+        /* Container */
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header / Hero */
+        header {
+            padding: 80px 0 40px;
+            text-align: left;
+        }
+
+        .hero-top {
+            font-size: 1.2rem;
+            color: var(--accent);
+            font-weight: 600;
+            margin-bottom: 10px;
+            display: inline-block;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+            margin-bottom: 20px;
+            background: linear-gradient(to right, #fff, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .bio {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin-bottom: 30px;
+        }
+
+        .social-links a {
+            font-size: 1.5rem;
+            margin-right: 20px;
+            color: var(--text-secondary);
+        }
+        .social-links a:hover { color: var(--text-main); }
+
+        /* Sections General */
+        section { padding: 60px 0; }
+        h2 {
+            font-size: 2rem;
+            margin-bottom: 40px;
+            border-left: 4px solid var(--accent);
+            padding-left: 15px;
+        }
+
+        /* Skills Tags */
+        .skills-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .skill-tag {
+            background: var(--card-bg);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            border: 1px solid #333;
+        }
+        .skill-tag:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        /* Experience Timeline */
+        .timeline {
+            position: relative;
+            border-left: 2px solid #333;
+            padding-left: 30px;
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 50px;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -36px;
+            top: 5px;
+            width: 12px;
+            height: 12px;
+            background: var(--accent);
+            border-radius: 50%;
+        }
+
+        .role { font-size: 1.3rem; font-weight: 700; color: var(--text-main); }
+        .company { font-size: 1.1rem; color: var(--accent); margin-bottom: 5px; }
+        .date { font-size: 0.9rem; color: #666; margin-bottom: 15px; font-family: monospace; }
+        
+        .timeline-content p { color: var(--text-secondary); margin-bottom: 10px; font-size: 0.95rem; }
+        
+        /* Highlights inside experience */
+        .highlight-box {
+            background: rgba(59, 130, 246, 0.1);
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-size: 0.9rem;
+            border-left: 3px solid var(--accent);
+        }
+
+        /* Projects Grid */
+        .project-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .project-card {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 16px;
+            transition: transform 0.3s ease;
+            border: 1px solid #333;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .project-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent);
+        }
+
+        .project-title { font-size: 1.4rem; font-weight: bold; margin-bottom: 10px; }
+        .project-desc { color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 20px; flex-grow: 1; }
+        .project-links a {
+            font-size: 0.9rem;
+            color: var(--accent);
+            font-weight: 600;
+            margin-right: 15px;
+        }
+        
+        /* Awards Section specifically for WWDC */
+        .award-card {
+            background: linear-gradient(145deg, #1c1c1e, #000);
+            border: 1px solid #333;
+            padding: 30px;
+            border-radius: 16px;
+            display: flex;
+            align-items: start;
+            gap: 20px;
+        }
+        .award-icon {
+            font-size: 3rem;
+            color: var(--apple-highlight);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 60px 0;
+            color: #666;
+            font-size: 0.9rem;
+            border-top: 1px solid #333;
+            margin-top: 80px;
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 2.5rem; }
+            .timeline { padding-left: 20px; }
+            .timeline-item::before { left: -26px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <span class="hero-top">Hello, I am</span>
+        <h1>Chenshuhao (Cody) Qin</h1>
+        <p class="bio">
+            Computer Science M.S. Student at <strong>USC</strong> & recent graduate of <strong>Duke University</strong>. 
+            <br><br>
+            I bridge the gap between research and reality. From building <strong>AI assistants</strong> for campuses to developing <strong>intelligent systems</strong> for gaming and healthcare, I am motivated by the challenge of turning innovation into tangible impact.
+        </p>
+        <div class="social-links">
+            <a href="https://www.linkedin.com/in/chenshuhao-qin/" target="_blank"><i class="fab fa-linkedin"></i></a>
+            <a href="https://github.com/wwdc/2023" target="_blank"><i class="fab fa-github"></i></a>
+            <a href="mailto:chenshuh@usc.edu"><i class="fas fa-envelope"></i></a>
+        </div>
+    </header>
+
+    <section id="featured">
+        <h2>🏆 Featured Achievement</h2>
+        <div class="award-card">
+            <div class="award-icon"><i class="fab fa-apple"></i></div>
+            <div>
+                <h3 style="font-size: 1.5rem; margin-bottom: 10px; color: white;">Apple WWDC 2023 Scholar</h3>
+                <p style="color: var(--text-secondary); margin-bottom: 10px;">
+                    Selected as a global winner (1 of 13 from China, sole winner from Jiangsu). Developed <strong>"Ferryman-Puzzle,"</strong> an interactive iOS game solving the classic Wolf-Goat-Cabbage problem.
+                </p>
+                <div class="project-links">
+                    <a href="https://github.com/wwdc/2023" target="_blank">View on GitHub <i class="fas fa-arrow-right"></i></a>
+                    <a href="https://www.ctdsb.net/c1673_202305/1770364.html" target="_blank">Read Interview <i class="fas fa-external-link-alt"></i></a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="experience">
+        <h2>💼 Experience</h2>
+        <div class="timeline">
+            
+            <div class="timeline-item">
+                <div class="role">Software Engineer Intern</div>
+                <div class="company">Share Creators</div>
+                <div class="date">Nov 2025 - Present | Chengdu, China</div>
+                <div class="timeline-content">
+                    <p>Currently working on software engineering initiatives.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="role">AI Algorithm Engineer Intern</div>
+                <div class="company">Sichuan Energy Internet Research Institute, Tsinghua University</div>
+                <div class="date">Sep 2025 - Oct 2025 | Chengdu, China</div>
+                <div class="timeline-content">
+                    <p>Implemented and reproduced the <strong>DeeplabV3+</strong> semantic segmentation model to perform fault diagnosis by analyzing infrared images of power grid equipment.</p>
+                    <p>Contributed to the full project lifecycle: dataset construction, annotation, algorithm visualization, and literature review.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="role">AI Engineer Intern</div>
+                <div class="company">G-bits (Gaming)</div>
+                <div class="date">May 2025 - Aug 2025 | Shenzhen, China</div>
+                <div class="timeline-content">
+                    <p><strong>Automated Moderation:</strong> Built a monitoring system using Dify + RPA, achieving 98.85% accuracy; captured 1,000+ violations.</p>
+                    <p><strong>AIGC Asset Production:</strong> Fine-tuned SDXL/Flux models with LoRA, producing assets with an 80% adoption rate, boosting marketing ROI to 196%.</p>
+                    <div class="highlight-box">
+                        Led a 5-person cross-functional team to establish an AIGC creative workflow for Douyin ads, tripling content delivery capacity.
+                    </div>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="role">Founding Member – ChatDKU</div>
+                <div class="company">Duke Kunshan University Edge Intelligent Lab</div>
+                <div class="date">Jul 2024 - May 2025 | Kunshan, China</div>
+                <div class="timeline-content">
+                    <p>Developed a <strong>RAG-Agent–based AI assistant</strong> to provide academic/administrative support. Built the RAG pipeline, optimized retrieval accuracy, and developed a secure SSO-enabled web interface.</p>
+                    <p>Recognized and adopted by multiple university offices.</p>
+                    <a href="https://www.youtube.com/watch?v=Os1Xb_CidMY" style="color:var(--accent); font-size:0.9rem; display:inline-block; margin-top:5px;">Watch Demo Video <i class="fas fa-play-circle"></i></a>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="role">Co-Founder – iOS Club</div>
+                <div class="company">U-Corp @ Apple</div>
+                <div class="date">Sep 2022 - May 2023 | Kunshan, China</div>
+                <div class="timeline-content">
+                    <p>Co-founded the first iOS Club at DKU. Organized VR software competitions securing $1,000 funding. Collaborated with Apple (Shanghai) to design sustainable club strategies.</p>
+                </div>
+            </div>
+
+             <div class="timeline-item">
+                <div class="role">AI Engineer Intern</div>
+                <div class="company">Agricultural Bank of China (R&D Center)</div>
+                <div class="date">Aug 2024 - Sep 2024 | Chengdu, China</div>
+                <div class="timeline-content">
+                    <p>Built a real-time speech recognition platform with FunASR. Integrated Paraformer-zh & FSMN-VAD to improve transcription accuracy by 18%.</p>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <section id="projects">
+        <h2>🚀 Projects & Research</h2>
+        <div class="project-grid">
+            
+            <div class="project-card">
+                <div class="project-title">ChatDKU (Campus AI)</div>
+                <div class="project-desc">
+                    A RAG-Agent AI chatbot designed for Duke Kunshan University. Handles complex queries about academic and administrative policies with high accuracy.
+                </div>
+                <div class="skills-grid" style="margin-bottom:15px;">
+                    <span class="skill-tag">RAG</span>
+                    <span class="skill-tag">LLM Agents</span>
+                    <span class="skill-tag">Web Dev</span>
+                </div>
+                <div class="project-links">
+                    <a href="https://www.youtube.com/watch?v=Os1Xb_CidMY" target="_blank">Demo Video</a>
+                </div>
+            </div>
+
+            <div class="project-card">
+                <div class="project-title">Edge IoT Privacy Research</div>
+                <div class="project-desc">
+                    Developed a federated learning framework using BLE signal strength for privacy-preserving room occupancy estimation. Accepted at ACM SenSys 2024.
+                </div>
+                <div class="skills-grid" style="margin-bottom:15px;">
+                    <span class="skill-tag">Federated Learning</span>
+                    <span class="skill-tag">BLE</span>
+                    <span class="skill-tag">Privacy</span>
+                </div>
+                <div class="project-links">
+                    <a href="https://dl.acm.org/doi/10.1145/3666025.3699422" target="_blank">ACM Paper</a>
+                    <a href="https://ine.dukekunshan.edu.cn/project/edge-iot/" target="_blank">Project Page</a>
+                </div>
+            </div>
+
+            <div class="project-card">
+                <div class="project-title">Diabetes Treatment Agent</div>
+                <div class="project-desc">
+                    Designed an AI evaluation system integrating Coze Workflow and RAG to assess Type-2 diabetes treatment scenarios. Used in "Elite Pharmacist" competition.
+                </div>
+                <div class="skills-grid" style="margin-bottom:15px;">
+                    <span class="skill-tag">Coze</span>
+                    <span class="skill-tag">Healthcare AI</span>
+                    <span class="skill-tag">RAG</span>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <section id="skills">
+        <h2>🛠 Skills & Certifications</h2>
+        <div class="skills-grid">
+            <span class="skill-tag">Swift / SwiftUI</span>
+            <span class="skill-tag">Python</span>
+            <span class="skill-tag">Machine Learning</span>
+            <span class="skill-tag">RAG / Agents</span>
+            <span class="skill-tag">Generative AI (AIGC)</span>
+            <span class="skill-tag">Computer Vision</span>
+            <span class="skill-tag">Speech Recognition</span>
+            <span class="skill-tag">Federated Learning</span>
+            <span class="skill-tag">Robotic Process Automation (RPA)</span>
+            <span class="skill-tag">Teaching / Leadership</span>
+        </div>
+        <br>
+        <h3 style="font-size:1.2rem; margin: 20px 0 10px; color: white;">Certifications</h3>
+        <ul style="color: var(--text-secondary); font-size: 0.95rem;">
+            <li>• Alibaba Cloud AI Trainer (Advanced)</li>
+            <li>• Apple WWDC 2023 Scholar</li>
+        </ul>
+    </section>
+
+    <footer>
+        <p>© 2025 Chenshuhao Qin. Built with simple code & passion.</p>
+    </footer>
+</div>
+
+</body>
+</html>
