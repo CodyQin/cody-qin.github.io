@@ -1,1 +1,5 @@
-theme: jekyll-theme-minimal
+title: Chenshuhao(Cody) Qin
+description: M.S. in CS at USC | WWDC23 Scholar | AI Developer
+theme: jekyll-theme-cayman
+show_downloads: false
+google_analytics:
