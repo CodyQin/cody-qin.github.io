@@ -5,333 +5,350 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chenshuhao (Cody) Qin | Intelligent Systems & ML</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@4.9.0/map/js/world.js"></script>
+
     <style>
         :root {
-            --bg-color: #0f0f11;
-            --card-bg: rgba(255, 255, 255, 0.05);
-            --card-border: rgba(255, 255, 255, 0.1);
+            /* 配色灵感来源：咖啡机图片 */
+            --bg-color: #08080a; /* 深邃黑 */
+            --card-bg: rgba(20, 20, 25, 0.6);
+            --card-border: rgba(255, 255, 255, 0.08);
+            
             --text-main: #ffffff;
-            --text-secondary: #a1a1aa;
-            --accent: #10b981; /* Teal/Emerald for academia/research */
-            --highlight: #fbbf24; /* Amber for awards */
-            --apple-bg: rgba(251, 191, 36, 0.1);
+            --text-secondary: #9ca3af;
+            
+            /* 熔岩橙渐变 - 对应咖啡机左侧暖光 */
+            --accent-orange: #ff4d00; 
+            --accent-gradient: linear-gradient(135deg, #ff4d00, #ff0055);
+            
+            /* 科技蓝 - 对应咖啡机右侧/顶部冷光 */
+            --accent-blue: #00f7ff;
+            
+            --glass-highlight: rgba(255, 255, 255, 0.05);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif; }
         body { background-color: var(--bg-color); color: var(--text-main); line-height: 1.6; overflow-x: hidden; }
 
-        .bg-gradient {
-            position: fixed; top: -50%; left: -50%; width: 200%; height: 200%;
-            background: radial-gradient(circle, rgba(16, 185, 129, 0.15) 0%, rgba(15,15,17,0) 50%); /* Use Teal accent */
-            z-index: -1; pointer-events: none;
+        /* 背景环境光效 */
+        .ambient-light {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+            background: 
+                radial-gradient(circle at 10% 20%, rgba(255, 77, 0, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(0, 247, 255, 0.05) 0%, transparent 40%);
+            pointer-events: none;
         }
 
-        .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+        .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
         a { text-decoration: none; color: inherit; transition: 0.3s; }
 
         /* Navbar */
-        nav { display: flex; justify-content: space-between; align-items: center; padding: 20px 0; margin-bottom: 40px; }
-        .logo { font-weight: 700; font-size: 1.2rem; letter-spacing: -0.5px; }
-        .nav-links a { margin-left: 20px; color: var(--text-secondary); font-size: 0.9rem; }
-        .nav-links a:hover { color: var(--text-main); }
+        nav { display: flex; justify-content: space-between; align-items: center; padding: 25px 0; margin-bottom: 40px; backdrop-filter: blur(5px); position: sticky; top: 0; z-index: 100; }
+        .logo { font-weight: 800; font-size: 1.4rem; letter-spacing: -0.5px; background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .nav-links a { margin-left: 25px; color: var(--text-secondary); font-size: 0.9rem; font-weight: 500; }
+        .nav-links a:hover { color: var(--accent-blue); text-shadow: 0 0 10px rgba(0,247,255,0.4); }
 
-        /* Hero Section */
-        .hero { display: flex; align-items: center; gap: 50px; padding: 60px 0 100px; }
-        .hero-content { flex: 1; }
-        .hero-img-container { flex-shrink: 0; width: 280px; height: 280px; position: relative; }
-        .hero-img { width: 100%; height: 100%; object-fit: cover; border-radius: 24px; box-shadow: 0 20px 40px rgba(0,0,0,0.4); border: 1px solid var(--card-border); transform: rotate(3deg); transition: 0.3s; }
-        .hero-img:hover { transform: rotate(0deg) scale(1.02); }
-
-        h1 { font-size: 3.5rem; font-weight: 800; letter-spacing: -1.5px; line-height: 1.2; margin-bottom: 10px; background: linear-gradient(to bottom right, #fff, #94a3b8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        /* Section Headers */
+        h2 { font-size: 2rem; margin: 60px 0 40px; display: flex; align-items: center; gap: 12px; position: relative; }
+        h2::before { content: ''; width: 4px; height: 24px; background: var(--accent-orange); border-radius: 2px; box-shadow: 0 0 10px var(--accent-orange); }
         
-        /* Name Styling */
-        .cn-name { font-weight: 400; font-size: 2rem; margin-left: 10px; opacity: 0.8; -webkit-text-fill-color: #fff; }
-        .phonetic { font-family: "Courier New", monospace; font-size: 0.9rem; color: var(--accent); margin-bottom: 20px; display: block; opacity: 0.8; }
+        /* Hero Section */
+        .hero { display: flex; align-items: center; gap: 60px; padding: 60px 0 80px; min-height: 80vh; }
+        .hero-content { flex: 1; }
+        
+        .hero-img-container { flex-shrink: 0; width: 300px; height: 300px; position: relative; }
+        .hero-img { 
+            width: 100%; height: 100%; object-fit: cover; border-radius: 30px; 
+            box-shadow: -20px 20px 60px rgba(0,0,0,0.5); 
+            border: 1px solid var(--card-border); 
+            position: relative; z-index: 2;
+        }
+        /* 模拟咖啡机的冷暖光打在照片上 */
+        .hero-img-container::before {
+            content: ''; position: absolute; inset: -10px; border-radius: 35px;
+            background: linear-gradient(45deg, var(--accent-orange), transparent, var(--accent-blue));
+            z-index: 1; opacity: 0.3; filter: blur(10px);
+        }
 
-        .bio { font-size: 1.2rem; color: var(--text-secondary); margin-bottom: 30px; max-width: 600px; }
+        h1 { font-size: 4rem; font-weight: 800; letter-spacing: -2px; line-height: 1.1; margin-bottom: 15px; }
+        .cn-name { font-weight: 300; font-size: 2rem; margin-left: 15px; color: var(--text-secondary); }
+        .phonetic { font-family: "Courier New", monospace; font-size: 0.9rem; color: var(--accent-blue); margin-bottom: 25px; display: block; opacity: 0.8; letter-spacing: 1px; }
+        .bio { font-size: 1.15rem; color: var(--text-secondary); margin-bottom: 40px; max-width: 600px; line-height: 1.8; }
+        .bio strong { color: #fff; font-weight: 600; }
 
         /* Buttons */
         .btn-group { display: flex; gap: 15px; flex-wrap: wrap; }
-        .btn { display: inline-block; padding: 12px 24px; background: var(--accent); color: #000; border-radius: 30px; font-weight: 600; font-size: 0.95rem; } /* Changed background to accent */
-        .btn:hover { background: #064e3b; transform: translateY(-2px); color: var(--text-main); }
-        .btn-outline { background: transparent; color: var(--text-main); border: 1px solid rgba(255,255,255,0.2); padding: 12px 24px; border-radius: 30px; font-weight: 600; font-size: 0.95rem; }
-        .btn-outline:hover { border-color: var(--text-main); background: rgba(255,255,255,0.05); transform: translateY(-2px); }
-
-        /* Sections */
-        h2 { font-size: 2rem; margin-bottom: 40px; display: flex; align-items: center; gap: 12px; }
-        h2::after { content: ''; height: 1px; flex-grow: 1; background: linear-gradient(to right, var(--card-border), transparent); }
+        .btn { 
+            padding: 14px 28px; 
+            background: var(--accent-gradient); 
+            color: #fff; border-radius: 50px; 
+            font-weight: 600; 
+            box-shadow: 0 10px 20px rgba(255, 77, 0, 0.2);
+            border: none; cursor: pointer;
+        } 
+        .btn:hover { transform: translateY(-3px); box-shadow: 0 15px 30px rgba(255, 77, 0, 0.4); }
         
-        .grid-section { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; margin-bottom: 100px; }
-        
-        /* Project/Award Card Styling */
-        .card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 20px; overflow: hidden; transition: 0.4s; backdrop-filter: blur(10px); display: flex; flex-direction: column; }
-        .card:hover { transform: translateY(-8px); border-color: rgba(255,255,255,0.2); box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
-        .card-image-box { width: 100%; height: 200px; overflow: hidden; border-bottom: 1px solid var(--card-border); }
-        .card-img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
-        .card:hover .card-img { transform: scale(1.05); }
-        .card-content { padding: 24px; flex-grow: 1; display: flex; flex-direction: column; }
-        .card-title { font-size: 1.25rem; font-weight: 700; margin-bottom: 10px; color: var(--text-main); }
-        .card-desc { font-size: 0.95rem; color: var(--text-secondary); margin-bottom: 20px; flex-grow: 1; }
-        .tags { display: flex; gap: 8px; flex-wrap: wrap; margin-top: auto; }
-        .tag { font-size: 0.75rem; padding: 4px 12px; background: rgba(255,255,255,0.08); border-radius: 12px; color: #d4d4d8; }
-
-        /* Project Links */
-        .project-links a { color: var(--accent); font-weight: 600; margin-right: 15px; font-size: 0.9rem; }
-        .project-links a:hover { color: #fff; }
-
-        /* WWDC Featured Card */
-        .wwdc-card { 
-            background: linear-gradient(135deg, #4c4c4c, #0a0a0a); 
-            border: 2px solid var(--highlight); 
-            box-shadow: 0 0 20px rgba(251, 191, 36, 0.4);
-            grid-column: 1 / -1; /* Make it full width */
-            display: flex;
-            align-items: center;
-            padding: 30px;
+        .btn-outline { 
+            background: transparent; color: var(--text-main); 
+            border: 1px solid var(--card-border); padding: 14px 28px; 
+            border-radius: 50px; font-weight: 600; 
         }
-        .wwdc-icon { font-size: 3rem; color: var(--highlight); margin-right: 20px; }
-        .wwdc-title { font-size: 1.8rem; font-weight: 800; margin-bottom: 8px; }
+        .btn-outline:hover { border-color: var(--text-main); background: rgba(255,255,255,0.05); }
 
+        /* --- MAP SECTION --- */
+        #map-container {
+            width: 100%; height: 500px;
+            background: rgba(255,255,255,0.02);
+            border-radius: 24px;
+            border: 1px solid var(--card-border);
+            margin-bottom: 100px;
+            position: relative;
+            overflow: hidden;
+        }
+        .map-overlay {
+            position: absolute; bottom: 20px; left: 20px;
+            background: rgba(0,0,0,0.7); backdrop-filter: blur(10px);
+            padding: 15px; border-radius: 12px; border: 1px solid var(--card-border);
+            font-size: 0.8rem; color: var(--text-secondary); pointer-events: none;
+        }
 
-        /* Timeline */
-        .timeline { border-left: 2px solid var(--card-border); margin-left: 10px; padding-left: 30px; margin-bottom: 100px; }
-        .timeline-item { position: relative; margin-bottom: 50px; }
-        .timeline-item::before { content: ''; position: absolute; left: -37px; top: 6px; width: 12px; height: 12px; background: var(--accent); border-radius: 50%; box-shadow: 0 0 0 6px var(--bg-color); }
-        .role { font-size: 1.3rem; font-weight: 700; }
-        .company { color: var(--accent); font-weight: 500; margin-bottom: 8px; display: block; }
-        .date { font-size: 0.85rem; color: #666; font-family: monospace; margin-bottom: 15px; display: block; }
-        .apple-photo-insert { margin-top: 15px; border-radius: 12px; overflow: hidden; border: 1px solid var(--card-border); }
-        .apple-photo-insert img { width: 100%; display: block; }
-        .apple-caption { font-size: 0.8rem; color: #666; padding: 8px; background: rgba(0,0,0,0.3); text-align: center;}
+        /* --- PROJECTS (Grid) --- */
+        .grid-section { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 30px; margin-bottom: 80px; }
+        
+        .card { 
+            background: var(--card-bg); 
+            border: 1px solid var(--card-border); 
+            border-radius: 24px; overflow: hidden; 
+            transition: 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            display: flex; flex-direction: column;
+            position: relative;
+        }
+        /* Card Glow Effect on Hover */
+        .card::after {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            box-shadow: inset 0 0 0 1px rgba(255,255,255,0.1);
+            border-radius: 24px; pointer-events: none;
+        }
+        .card:hover { 
+            transform: translateY(-10px); 
+            border-color: var(--accent-orange);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4), 0 0 20px rgba(255, 77, 0, 0.1);
+        }
 
-        /* Skills */
-        .skill-section { margin-bottom: 100px; }
+        .card-content { padding: 30px; flex-grow: 1; display: flex; flex-direction: column; }
+        .card-title { font-size: 1.3rem; font-weight: 700; margin-bottom: 10px; color: #fff; }
+        .card-desc { font-size: 0.95rem; color: var(--text-secondary); margin-bottom: 20px; }
+        .tags { display: flex; gap: 8px; flex-wrap: wrap; margin-top: auto; }
+        .tag { font-size: 0.75rem; padding: 5px 12px; background: rgba(255,255,255,0.05); border-radius: 8px; color: #d4d4d8; border: 1px solid rgba(255,255,255,0.05); }
+        
+        .project-links a { color: var(--accent-orange); font-size: 0.9rem; font-weight: 600; margin-right: 15px; }
+        .project-links a:hover { color: #fff; text-decoration: underline; }
+
+        /* --- AWARDS (Card Stack Animation) --- */
+        .stack-container {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            height: 300px;
+            margin: 50px auto 100px;
+            perspective: 1000px;
+        }
+        .stack-card {
+            position: absolute;
+            width: 100%; height: 100%;
+            background: linear-gradient(145deg, #1a1a1d, #131315);
+            border: 1px solid var(--card-border);
+            border-radius: 24px;
+            padding: 30px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;
+            transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+            cursor: pointer;
+            user-select: none;
+        }
+        /* Visual cues for stack */
+        .stack-card img { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; margin-bottom: 20px; border: 2px solid var(--accent-orange);}
+        .stack-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 10px; color: #fff; }
+        .stack-desc { color: var(--text-secondary); font-size: 0.9rem; }
+        .stack-hint { position: absolute; bottom: 15px; font-size: 0.8rem; color: var(--accent-blue); opacity: 0.6; animation: pulse 2s infinite;}
+
+        @keyframes pulse { 0%, 100% { opacity: 0.6; } 50% { opacity: 1; } }
+
+        /* --- TIMELINE --- */
+        .timeline { border-left: 2px solid rgba(255,255,255,0.1); margin-left: 10px; padding-left: 40px; }
+        .timeline-item { position: relative; margin-bottom: 60px; }
+        .timeline-item::before { 
+            content: ''; position: absolute; left: -47px; top: 5px; 
+            width: 12px; height: 12px; 
+            background: #000; border: 2px solid var(--accent-orange); 
+            border-radius: 50%; box-shadow: 0 0 15px var(--accent-orange);
+        }
+        .role { font-size: 1.4rem; font-weight: 700; color: #fff; }
+        .company { color: var(--accent-orange); font-weight: 500; display: block; margin-bottom: 5px; font-family: monospace;}
+        .date { font-size: 0.85rem; color: #666; margin-bottom: 15px; display: block; text-transform: uppercase; letter-spacing: 1px;}
+        
+        /* Skills Pill Update */
         .skill-list { display: flex; flex-wrap: wrap; gap: 12px; }
-        .skill-pill { padding: 10px 20px; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 30px; color: var(--text-secondary); font-size: 0.95rem; transition: 0.3s; }
-        .skill-pill:hover { border-color: var(--accent); color: var(--text-main); background: rgba(16, 185, 129, 0.1); }
+        .skill-pill { 
+            padding: 10px 22px; background: rgba(255,255,255,0.03); 
+            border: 1px solid var(--card-border); border-radius: 30px; 
+            color: var(--text-secondary); font-size: 0.9rem; transition: 0.3s; 
+        }
+        .skill-pill:hover { 
+            border-color: var(--accent-blue); color: var(--accent-blue); 
+            background: rgba(0, 247, 255, 0.05); box-shadow: 0 0 15px rgba(0, 247, 255, 0.1);
+        }
 
-        footer { text-align: center; padding: 80px 0 40px; border-top: 1px solid var(--card-border); color: #666; font-size: 0.9rem; }
+        /* WWDC Special Card */
+        .wwdc-card { 
+            background: linear-gradient(135deg, #1c1c1e, #000); 
+            border: 1px solid #333;
+            position: relative; overflow: hidden;
+            padding: 40px; border-radius: 24px;
+            display: flex; align-items: center; gap: 30px;
+        }
+        .wwdc-card::before {
+            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+            background: radial-gradient(circle, rgba(255, 215, 0, 0.1) 0%, transparent 60%);
+            pointer-events: none;
+        }
+        .wwdc-icon { font-size: 3.5rem; color: #fbbf24; text-shadow: 0 0 20px rgba(251, 191, 36, 0.4); }
+
+        footer { text-align: center; padding: 80px 0 40px; border-top: 1px solid var(--card-border); color: #666; }
+        footer a { color: #888; transition: 0.3s; }
+        footer a:hover { color: var(--accent-orange); }
+
+        /* Animations */
+        .fade-in-up { animation: fadeInUp 0.8s ease forwards; opacity: 0; transform: translateY(30px); }
+        @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
 
         @media (max-width: 768px) {
-            .hero { flex-direction: column-reverse; text-align: center; padding-top: 40px;}
-            .hero-img-container { width: 200px; height: 200px; }
-            h1 { font-size: 2.5rem; }
-            .cn-name { display: block; margin: 5px 0 0 0; font-size: 1.5rem; }
-            .bio { margin: 0 auto 30px; }
-            .btn-group { justify-content: center; }
-            nav { flex-direction: column; gap: 15px; }
-            .nav-links a { margin: 0 10px; }
+            .hero { flex-direction: column-reverse; text-align: center; padding-top: 100px; }
+            .hero-img-container { width: 220px; height: 220px; margin-bottom: 30px; }
+            h1 { font-size: 2.8rem; }
+            .cn-name { display: block; margin: 5px 0 0; font-size: 1.5rem; }
             .wwdc-card { flex-direction: column; text-align: center; }
-            .wwdc-icon { margin-right: 0; margin-bottom: 15px; }
+            .nav-links { display: none; } /* Simplify for mobile */
         }
     </style>
 </head>
 <body>
 
-    <div class="bg-gradient"></div>
+    <div class="ambient-light"></div>
 
     <div class="container">
         
-        <nav>
+        <nav class="fade-in-up" style="animation-delay: 0.1s;">
             <div class="logo">Cody Qin</div>
             <div class="nav-links">
                 <a href="#about">About</a>
-                <a href="#projects">Projects</a>
+                <a href="#footprint">Footprint</a>
                 <a href="#experience">Experience</a>
+                <a href="#projects">Projects</a>
                 <a href="#awards">Awards</a>
             </div>
         </nav>
 
         <section class="hero" id="about">
-            <div class="hero-content">
+            <div class="hero-content fade-in-up" style="animation-delay: 0.2s;">
                 <h1>
-                    Chenshuhao (Cody) Qin
+                    Chenshuhao Qin
                     <span class="cn-name">秦陈书豪</span>
                 </h1>
-                <span class="phonetic">/ Chin - Chen - Shoo - How /</span>
+                <span class="phonetic">/ Cody /</span>
 
                 <p class="bio">
-                    M.S. Computer Science student at <strong>USC</strong> | Duke University graduate. My focus is on developing robust **Intelligent Systems** and applying **Machine Learning** techniques to solve problems across healthcare, finance, and gaming. I thrive at the intersection of research and deployment.
+                    M.S. CS at <strong>USC</strong> | Duke Alum.<br>
+                    Developing <strong>Intelligent Systems</strong> at the intersection of research & reality. <br>
+                    Focus: Generative AI, RAG, and Scalable Software Architectures.
                 </p>
+                
+                <div class="skill-list" style="margin-bottom: 30px;">
+                    <span class="skill-pill">Python & PyTorch</span>
+                    <span class="skill-pill">AIGC & RAG</span>
+                    <span class="skill-pill">Federated Learning</span>
+                    <span class="skill-pill">Swift / SwiftUI</span>
+                </div>
+
                 <div class="btn-group">
-                    <a href="mailto:cody2363264403@gmail.com" class="btn">Email Me</a>
-                    
-                    <a href="https://www.linkedin.com/in/chenshuhao-qin/" target="_blank" class="btn-outline">
-                        <i class="fab fa-linkedin"></i> LinkedIn
-                    </a>
-                    
-                    <a href="https://github.com/CodyQin" target="_blank" class="btn-outline">
-                        <i class="fab fa-github"></i> GitHub Profile
-                    </a>
+                    <a href="mailto:cody2363264403@gmail.com" class="btn">Get in Touch</a>
+                    <a href="https://github.com/CodyQin" target="_blank" class="btn-outline"><i class="fab fa-github"></i> GitHub</a>
+                    <a href="https://www.linkedin.com/in/chenshuhao-qin/" target="_blank" class="btn-outline"><i class="fab fa-linkedin"></i> LinkedIn</a>
                 </div>
             </div>
-            <div class="hero-img-container">
-                <img src="images/profile-pic.jpg" alt="Cody Qin" class="hero-img">
-            </div>
-        </section>
-        
-        <section class="skill-section">
-            <h2>🛠 Core Technical Stack</h2>
-            <div class="skill-list">
-                <span class="skill-pill">Python & PyTorch</span>
-                <span class="skill-pill">Generative AI (AIGC)</span>
-                <span class="skill-pill">Retrieval-Augmented Generation (RAG)</span>
-                <span class="skill-pill">Federated Learning</span>
-                <span class="skill-pill">Swift / SwiftUI</span>
-                <span class="skill-pill">Computer Vision</span>
-                <span class="skill-pill">Speech Recognition</span>
-                <span class="skill-pill">Software Systems Engineering</span>
-            </div>
-        </section>
-        
-        <section id="projects">
-            <h2>🔬 Research & Key Projects</h2>
-            <div class="grid-section">
-                
-                <div class="card">
-                    <div class="card-content">
-                        <div class="card-title">Privacy-Preserving Edge IoT (ACM SenSys)</div>
-                        <p class="card-desc">Developed a **Federated Learning** framework using BLE signal strength for privacy-preserving room occupancy estimation. Achieved **95% prediction accuracy** and was accepted at **ACM SenSys 2024**.</p>
-                        <div class="tags"><span class="tag">Federated Learning</span><span class="tag">Edge Computing</span><span class="tag">Privacy</span></div>
-                        <div class="project-links" style="margin-top: 15px;">
-                            <a href="https://dl.acm.org/doi/10.1145/3666025.3699422" target="_blank"><i class="fas fa-file-pdf"></i> Paper (ACM)</a>
-                            <a href="https://ine.dukekunshan.edu.cn/project/edge-iot/" target="_blank"><i class="fas fa-link"></i> Project Page</a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div class="card-content">
-                        <div class="card-title">ChatDKU (RAG-Agent Campus Assistant)</div>
-                        <p class="card-desc">Founding Member of a RAG-Agent-based AI assistant for Duke Kunshan University. Built the RAG pipeline, optimized retrieval, and developed a secure web interface. **Successfully deployed for university offices.**</p>
-                        <div class="tags"><span class="tag">RAG</span><span class="tag">LLM Agents</span><span class="tag">Deployment</span></div>
-                        <div class="project-links" style="margin-top: 15px;">
-                            <a href="https://www.youtube.com/watch?v=Os1Xb_CidMY" target="_blank"><i class="fab fa-youtube"></i> Watch Demo</a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div class="card-content">
-                        <div class="card-title">High-ROI AIGC Workflow (G-bits)</div>
-                        <p class="card-desc">Deployed and fine-tuned SDXL/Flux models to produce high-quality game marketing assets (80% adoption). **Boosted marketing ROI to 196%** and attracted 117k new users.</p>
-                        <div class="tags"><span class="tag">AIGC</span><span class="tag">SDXL/Flux</span><span class="tag">ROI Optimization</span></div>
-                    </div>
-                </div>
-                
+            <div class="hero-img-container fade-in-up" style="animation-delay: 0.4s;">
+                <img src="images/profile-pic.jpg" alt="Cody Qin" class="hero-img" onerror="this.src='https://ui-avatars.com/api/?name=Cody+Qin&background=111&color=fff&size=300'">
             </div>
         </section>
 
-        <section>
-            <div class="wwdc-card">
-                 <div class="wwdc-icon"><i class="fab fa-apple"></i></div>
-                 <div>
-                    <div class="wwdc-title">Apple WWDC 2023 Scholar</div>
-                    <p style="color: var(--text-secondary);">
-                        Selected as a global winner (1 of 13 from China). Developed **"Ferryman-Puzzle,"** an interactive iOS game based on the classic Wolf-Goat-Cabbage crossing problem.
-                    </p>
-                    <div class="project-links" style="margin-top: 10px;">
-                        <a href="https://github.com/wwdc/2023" target="_blank"><i class="fab fa-github"></i> Project Code</a>
-                        <a href="https://www.ctdsb.net/c1673_202305/1770364.html" target="_blank"><i class="fas fa-newspaper"></i> News Coverage</a>
-                    </div>
-                 </div>
+        <section id="footprint" class="fade-in-up" style="animation-delay: 0.5s;">
+            <h2><i class="fas fa-globe-asia"></i> Global Footprint</h2>
+            <div id="map-container"></div>
+            <div style="text-align:center; color:var(--text-secondary); font-size:0.9rem; margin-top:-80px; position:relative; z-index:5;">
+                Creating code and memories across 7 countries & 30+ cities.
             </div>
         </section>
 
-
-        <section id="experience">
-            <h2>💼 Professional Experience Timeline</h2>
+        <section id="experience" class="fade-in-up" style="animation-delay: 0.6s;">
+            <h2><i class="fas fa-briefcase"></i> Experience Timeline</h2>
             <div class="timeline">
                 
                 <div class="timeline-item">
                     <div class="role">Software Engineer Intern</div>
-                    <span class="company">Share Creators</span>
-                    <span class="date">Nov 2025 - Present | Chengdu</span>
-                    <p style="color:var(--text-secondary)">Focus on software systems development in a creative technology domain.</p>
+                    <span class="company">Share Creators (Chengdu)</span>
+                    <span class="date">Nov 2025 - Present</span>
+                    <p style="color:var(--text-secondary)">Software systems development in creative tech.</p>
                 </div>
 
                 <div class="timeline-item">
                     <div class="role">AI Algorithm Engineer Intern</div>
-                    <span class="company">Sichuan Energy Internet Research Institute, Tsinghua University</span>
-                    <span class="date">Sep 2025 - Oct 2025 | Chengdu</span>
-                    <p style="color:var(--text-secondary)">Implemented **DeeplabV3+** (semantic segmentation) for fault diagnosis using infrared images of power grid equipment.</p>
+                    <span class="company">Tsinghua University (Energy Internet Research Inst.)</span>
+                    <span class="date">Sep 2025 - Oct 2025</span>
+                    <p style="color:var(--text-secondary)">Implemented DeeplabV3+ for infrared fault diagnosis on power grids.</p>
                 </div>
 
                 <div class="timeline-item">
                     <div class="role">AI Engineer Intern</div>
-                    <span class="company">G-bits</span>
-                    <span class="date">May 2025 - Aug 2025 | Shenzhen</span>
-                    <p style="color:var(--text-secondary)">Built automated monitoring system (Dify + RPA, **98.85% accuracy**). Led team to establish AIGC creative workflow, **tripling content delivery**.</p>
+                    <span class="company">G-bits (Shenzhen)</span>
+                    <span class="date">May 2025 - Aug 2025</span>
+                    <p style="color:var(--text-secondary)">Built AIGC workflows (SDXL/Flux) boosting marketing ROI to 196%.</p>
                 </div>
                 
                 <div class="timeline-item">
                     <div class="role">AI Engineer Intern</div>
-                    <span class="company">Shanghai CareLinker Medical Technology Co., Ltd.</span>
-                    <span class="date">Apr 2025 - Apr 2025 | Shanghai</span>
-                    <p style="color:var(--text-secondary)">Designed RAG/Agent-based AI system to assess Type-2 diabetes treatment scenarios, enhancing evaluation objectivity in pharmacist competitions.</p>
+                    <span class="company">AgBank of China R&D (Chengdu)</span>
+                    <span class="date">Aug 2024 - Sep 2024</span>
+                    <p style="color:var(--text-secondary)">Speech recognition platform using FunASR (Paraformer-zh).</p>
                 </div>
 
-                <div class="timeline-item">
-                    <div class="role">AI Engineer Intern</div>
-                    <span class="company">Agricultural Bank of China (R&D Center)</span>
-                    <span class="date">Aug 2024 - Sep 2024 | Chengdu</span>
-                    <p style="color:var(--text-secondary)">Built real-time **speech recognition platform** using FunASR, integrating advanced models (Paraformer-zh) to **improve transcription accuracy by 18%**.</p>
-                </div>
-
-                <div class="timeline-item">
-                    <div class="role">Co-Founder – iOS Club</div>
-                    <span class="company">U-Corp @ Apple</span>
-                    <span class="date">Sep 2022 - May 2023 | Kunshan</span>
-                    <p style="color:var(--text-secondary)">Co-founded the first iOS Club at DKU. Organized VR software competitions and provided Swift programming training.</p>
-                    <div class="apple-photo-insert">
-                        <img src="images/apple-event.jpg" alt="Teaching Swift at iOS Club">
-                        <div class="apple-caption">Leading a workshop at the iOS Club</div>
-                    </div>
-                </div>
             </div>
         </section>
 
-        <section id="awards">
-            <h2>🎖 Academic Honors & Certifications</h2>
+        <section id="projects" class="fade-in-up" style="animation-delay: 0.7s;">
+            <h2><i class="fas fa-flask"></i> Research & Projects</h2>
+            
+            <div class="wwdc-card" style="margin-bottom: 40px;">
+                <div class="wwdc-icon"><i class="fab fa-apple"></i></div>
+                <div>
+                   <div style="font-size: 1.6rem; font-weight: 700; color: #fff; margin-bottom: 5px;">Apple WWDC 2023 Scholar</div>
+                   <p style="color: var(--text-secondary); margin-bottom: 15px;">
+                       Global Winner. Developed "Ferryman-Puzzle", an interactive iOS game solving algorithmic logic puzzles.
+                   </p>
+                   <div class="project-links">
+                       <a href="https://github.com/wwdc/2023" target="_blank">View Code</a>
+                       <a href="#">News Coverage</a>
+                   </div>
+                </div>
+           </div>
+
             <div class="grid-section">
-                
                 <div class="card">
-                    <div class="card-image-box"><img src="images/award-innovation.jpg" alt="Innovation Cert" class="card-img"></div>
-                    <div class="card-content"><div class="card-title">Provincial Innovation Project</div><p class="card-desc">Completion of the Jiangsu College Student Innovation Training Program (Edge-IoT project).</p></div>
-                </div>
-
-                <div class="card">
-                    <div class="card-image-box"><img src="images/cert-alibaba.jpg" alt="Alibaba AI" class="card-img"></div>
-                    <div class="card-content"><div class="card-title">AI Trainer (Advanced)</div><p class="card-desc">Advanced certification from Alibaba Cloud Intelligent DAMO Academy (2025).</p></div>
-                </div>
-
-                <div class="card">
-                    <div class="card-image-box"><img src="images/cert-ucorp.jpg" alt="Apple U-Corp" class="card-img"></div>
-                    <div class="card-content"><div class="card-title">U-Corp @ Apple (iOS Project)</div><p class="card-desc">Certificate of Achievement for outstanding performance in the 2023 Spring Innovation Lab.</p></div>
-                </div>
-
-                <div class="card">
-                    <div class="card-image-box"><img src="images/award-ambassador.jpg" alt="Ambassador" class="card-img"></div>
-                    <div class="card-content"><div class="card-title">Student Ambassador</div><p class="card-desc">Appointed as Student Ambassador of Duke Kunshan University (2021-2022).</p></div>
-                </div>
-
-                 <div class="card">
-                    <div class="card-image-box"><img src="images/award-kendo.jpg" alt="Kendo" class="card-img"></div>
-                    <div class="card-content"><div class="card-title">Kendo Competition 1st Place</div><p class="card-desc">Won 1st Place in the DKU Kendo Course Ranking Competition (Male's group, 2022-2023).</p></div>
-                </div>
-
-            </div>
-        </section>
-
-        <footer>
-            <p>© 2025 Chenshuhao Qin. Designed for professional impact.</p>
-            <div style="margin-top:10px;">
-                <a href="mailto:cody2363264403@gmail.com" style="margin:0 10px;"><i class="fas fa-envelope"></i></a>
-                <a href="https://www.linkedin.com/in/chenshuhao-qin/" style="margin:0 10px;"><i class="fab fa-linkedin"></i></a>
-                <a href="https://github.com/CodyQin" style="margin:0 10px;"><i class="fab fa-github"></i></a>
-            </div>
-        </footer>
-
-    </div>
-</body>
-</html>
+                    <div class="card-content">
+                        <div class="card-title">Privacy-Preserving Edge IoT</div>
+                        <p class="card-desc">ACM SenSys 2024 Accepted. Federated Learning framework using BLE signals for occupancy estimation (95% acc).</p>
+                        <div class="tags"><span class="tag">Federated Learning</span><span class="tag">Edge AI</span></div>
+                        <div class="project-links" style="margin-top:15px">
+                            <a href="#"><i class="fas fa-paperclip
