@@ -5,233 +5,229 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chenshuhao (Cody) Qin | Intelligent Systems & ML</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/echarts@4.9.0/map/js/world.js"></script>
-
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
     <style>
         :root {
-            /* 配色灵感来源：咖啡机图片 */
-            --bg-color: #08080a; /* 深邃黑 */
+            /* 配色灵感来源于咖啡机图片 (Image 1) */
+            --bg-color: #050505; /* 极深的黑 */
             --card-bg: rgba(20, 20, 25, 0.6);
             --card-border: rgba(255, 255, 255, 0.08);
-            
             --text-main: #ffffff;
             --text-secondary: #9ca3af;
             
-            /* 熔岩橙渐变 - 对应咖啡机左侧暖光 */
-            --accent-orange: #ff4d00; 
-            --accent-gradient: linear-gradient(135deg, #ff4d00, #ff0055);
+            /* 冷暖双色对撞 */
+            --accent-blue: #00c6ff; /* 顶部冷光 */
+            --accent-orange: #ff4b1f; /* 底部暖光 (岩浆色) */
             
-            /* 科技蓝 - 对应咖啡机右侧/顶部冷光 */
-            --accent-blue: #00f7ff;
-            
-            --glass-highlight: rgba(255, 255, 255, 0.05);
+            --gradient-text: linear-gradient(135deg, #fff 30%, #9ca3af 100%);
+            --gradient-brand: linear-gradient(to right, var(--accent-blue), var(--accent-orange));
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif; }
         body { background-color: var(--bg-color); color: var(--text-main); line-height: 1.6; overflow-x: hidden; }
 
-        /* 背景环境光效 */
+        /* 动态背景光效 - 模拟照片中的光影 */
         .ambient-light {
             position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
+            width: 100vw;
+            height: 100vh;
             z-index: -1;
-            background: 
-                radial-gradient(circle at 10% 20%, rgba(255, 77, 0, 0.08) 0%, transparent 40%),
-                radial-gradient(circle at 90% 80%, rgba(0, 247, 255, 0.05) 0%, transparent 40%);
             pointer-events: none;
+            background: 
+                radial-gradient(circle at 10% 10%, rgba(0, 198, 255, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 90% 90%, rgba(255, 75, 31, 0.12) 0%, transparent 40%);
         }
 
-        .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+        .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
         a { text-decoration: none; color: inherit; transition: 0.3s; }
 
-        /* Navbar */
-        nav { display: flex; justify-content: space-between; align-items: center; padding: 25px 0; margin-bottom: 40px; backdrop-filter: blur(5px); position: sticky; top: 0; z-index: 100; }
-        .logo { font-weight: 800; font-size: 1.4rem; letter-spacing: -0.5px; background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .nav-links a { margin-left: 25px; color: var(--text-secondary); font-size: 0.9rem; font-weight: 500; }
-        .nav-links a:hover { color: var(--accent-blue); text-shadow: 0 0 10px rgba(0,247,255,0.4); }
+        /* Scroll Reveal Animation Class */
+        .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s ease; }
+        .reveal.active { opacity: 1; transform: translateY(0); }
 
-        /* Section Headers */
-        h2 { font-size: 2rem; margin: 60px 0 40px; display: flex; align-items: center; gap: 12px; position: relative; }
-        h2::before { content: ''; width: 4px; height: 24px; background: var(--accent-orange); border-radius: 2px; box-shadow: 0 0 10px var(--accent-orange); }
-        
+        /* Navbar */
+        nav { display: flex; justify-content: space-between; align-items: center; padding: 25px 0; backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 100; background: rgba(5,5,5,0.8); }
+        .logo { font-weight: 800; font-size: 1.3rem; letter-spacing: -0.5px; background: var(--gradient-brand); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .nav-links a { margin-left: 25px; color: var(--text-secondary); font-size: 0.9rem; font-weight: 500; position: relative; }
+        .nav-links a:hover { color: var(--text-main); }
+        .nav-links a::after { content: ''; position: absolute; width: 0; height: 2px; bottom: -4px; left: 0; background: var(--accent-orange); transition: 0.3s; }
+        .nav-links a:hover::after { width: 100%; }
+
         /* Hero Section */
-        .hero { display: flex; align-items: center; gap: 60px; padding: 60px 0 80px; min-height: 80vh; }
+        .hero { display: flex; align-items: center; gap: 60px; padding: 80px 0 100px; min-height: 80vh; }
         .hero-content { flex: 1; }
         
-        .hero-img-container { flex-shrink: 0; width: 300px; height: 300px; position: relative; }
-        .hero-img { 
-            width: 100%; height: 100%; object-fit: cover; border-radius: 30px; 
-            box-shadow: -20px 20px 60px rgba(0,0,0,0.5); 
-            border: 1px solid var(--card-border); 
-            position: relative; z-index: 2;
+        /* 头像框增加冷暖光边框 */
+        .hero-img-container { 
+            flex-shrink: 0; width: 300px; height: 300px; position: relative; 
+            border-radius: 30px; 
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-orange));
+            padding: 3px; /* Border width */
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
         }
-        /* 模拟咖啡机的冷暖光打在照片上 */
-        .hero-img-container::before {
-            content: ''; position: absolute; inset: -10px; border-radius: 35px;
-            background: linear-gradient(45deg, var(--accent-orange), transparent, var(--accent-blue));
-            z-index: 1; opacity: 0.3; filter: blur(10px);
-        }
+        .hero-img { width: 100%; height: 100%; object-fit: cover; border-radius: 27px; background: #111; display: block; }
 
         h1 { font-size: 4rem; font-weight: 800; letter-spacing: -2px; line-height: 1.1; margin-bottom: 15px; }
-        .cn-name { font-weight: 300; font-size: 2rem; margin-left: 15px; color: var(--text-secondary); }
-        .phonetic { font-family: "Courier New", monospace; font-size: 0.9rem; color: var(--accent-blue); margin-bottom: 25px; display: block; opacity: 0.8; letter-spacing: 1px; }
-        .bio { font-size: 1.15rem; color: var(--text-secondary); margin-bottom: 40px; max-width: 600px; line-height: 1.8; }
-        .bio strong { color: #fff; font-weight: 600; }
+        .cn-name { font-weight: 300; font-size: 2rem; opacity: 0.7; margin-left: 10px; }
+        .phonetic { font-family: "Courier New", monospace; font-size: 0.9rem; color: var(--accent-blue); display: block; margin-bottom: 25px; letter-spacing: 1px; }
+        
+        .bio { font-size: 1.15rem; color: var(--text-secondary); margin-bottom: 35px; max-width: 600px; border-left: 3px solid var(--accent-orange); padding-left: 20px; }
+        .bio strong { color: var(--text-main); }
 
         /* Buttons */
         .btn-group { display: flex; gap: 15px; flex-wrap: wrap; }
-        .btn { 
-            padding: 14px 28px; 
-            background: var(--accent-gradient); 
-            color: #fff; border-radius: 50px; 
-            font-weight: 600; 
-            box-shadow: 0 10px 20px rgba(255, 77, 0, 0.2);
-            border: none; cursor: pointer;
-        } 
-        .btn:hover { transform: translateY(-3px); box-shadow: 0 15px 30px rgba(255, 77, 0, 0.4); }
-        
-        .btn-outline { 
-            background: transparent; color: var(--text-main); 
-            border: 1px solid var(--card-border); padding: 14px 28px; 
-            border-radius: 50px; font-weight: 600; 
-        }
-        .btn-outline:hover { border-color: var(--text-main); background: rgba(255,255,255,0.05); }
+        .btn { display: inline-flex; align-items: center; padding: 14px 28px; background: var(--text-main); color: #000; border-radius: 50px; font-weight: 700; font-size: 0.95rem; transition: 0.3s; }
+        .btn:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(255,255,255,0.15); }
+        .btn-outline { display: inline-flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.05); color: var(--text-main); border: 1px solid var(--card-border); padding: 14px 28px; border-radius: 50px; font-weight: 600; font-size: 0.95rem; backdrop-filter: blur(5px); }
+        .btn-outline:hover { border-color: var(--accent-blue); color: var(--accent-blue); transform: translateY(-3px); }
 
-        /* --- MAP SECTION --- */
-        #map-container {
-            width: 100%; height: 500px;
-            background: rgba(255,255,255,0.02);
-            border-radius: 24px;
-            border: 1px solid var(--card-border);
-            margin-bottom: 100px;
-            position: relative;
-            overflow: hidden;
-        }
-        .map-overlay {
-            position: absolute; bottom: 20px; left: 20px;
-            background: rgba(0,0,0,0.7); backdrop-filter: blur(10px);
-            padding: 15px; border-radius: 12px; border: 1px solid var(--card-border);
-            font-size: 0.8rem; color: var(--text-secondary); pointer-events: none;
-        }
-
-        /* --- PROJECTS (Grid) --- */
-        .grid-section { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 30px; margin-bottom: 80px; }
-        
-        .card { 
-            background: var(--card-bg); 
-            border: 1px solid var(--card-border); 
-            border-radius: 24px; overflow: hidden; 
-            transition: 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-            display: flex; flex-direction: column;
-            position: relative;
-        }
-        /* Card Glow Effect on Hover */
-        .card::after {
-            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            box-shadow: inset 0 0 0 1px rgba(255,255,255,0.1);
-            border-radius: 24px; pointer-events: none;
-        }
-        .card:hover { 
-            transform: translateY(-10px); 
-            border-color: var(--accent-orange);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.4), 0 0 20px rgba(255, 77, 0, 0.1);
-        }
-
-        .card-content { padding: 30px; flex-grow: 1; display: flex; flex-direction: column; }
-        .card-title { font-size: 1.3rem; font-weight: 700; margin-bottom: 10px; color: #fff; }
-        .card-desc { font-size: 0.95rem; color: var(--text-secondary); margin-bottom: 20px; }
-        .tags { display: flex; gap: 8px; flex-wrap: wrap; margin-top: auto; }
-        .tag { font-size: 0.75rem; padding: 5px 12px; background: rgba(255,255,255,0.05); border-radius: 8px; color: #d4d4d8; border: 1px solid rgba(255,255,255,0.05); }
-        
-        .project-links a { color: var(--accent-orange); font-size: 0.9rem; font-weight: 600; margin-right: 15px; }
-        .project-links a:hover { color: #fff; text-decoration: underline; }
-
-        /* --- AWARDS (Card Stack Animation) --- */
-        .stack-container {
-            position: relative;
-            width: 100%;
-            max-width: 500px;
-            height: 300px;
-            margin: 50px auto 100px;
-            perspective: 1000px;
-        }
-        .stack-card {
-            position: absolute;
-            width: 100%; height: 100%;
-            background: linear-gradient(145deg, #1a1a1d, #131315);
-            border: 1px solid var(--card-border);
-            border-radius: 24px;
-            padding: 30px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-            display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;
-            transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
-            cursor: pointer;
-            user-select: none;
-        }
-        /* Visual cues for stack */
-        .stack-card img { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; margin-bottom: 20px; border: 2px solid var(--accent-orange);}
-        .stack-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 10px; color: #fff; }
-        .stack-desc { color: var(--text-secondary); font-size: 0.9rem; }
-        .stack-hint { position: absolute; bottom: 15px; font-size: 0.8rem; color: var(--accent-blue); opacity: 0.6; animation: pulse 2s infinite;}
-
-        @keyframes pulse { 0%, 100% { opacity: 0.6; } 50% { opacity: 1; } }
-
-        /* --- TIMELINE --- */
-        .timeline { border-left: 2px solid rgba(255,255,255,0.1); margin-left: 10px; padding-left: 40px; }
-        .timeline-item { position: relative; margin-bottom: 60px; }
-        .timeline-item::before { 
-            content: ''; position: absolute; left: -47px; top: 5px; 
-            width: 12px; height: 12px; 
-            background: #000; border: 2px solid var(--accent-orange); 
-            border-radius: 50%; box-shadow: 0 0 15px var(--accent-orange);
-        }
-        .role { font-size: 1.4rem; font-weight: 700; color: #fff; }
-        .company { color: var(--accent-orange); font-weight: 500; display: block; margin-bottom: 5px; font-family: monospace;}
-        .date { font-size: 0.85rem; color: #666; margin-bottom: 15px; display: block; text-transform: uppercase; letter-spacing: 1px;}
-        
-        /* Skills Pill Update */
-        .skill-list { display: flex; flex-wrap: wrap; gap: 12px; }
+        /* Skills */
+        .skill-section { margin-bottom: 120px; text-align: center; }
+        .skill-list { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin-top: 30px; }
         .skill-pill { 
-            padding: 10px 22px; background: rgba(255,255,255,0.03); 
-            border: 1px solid var(--card-border); border-radius: 30px; 
-            color: var(--text-secondary); font-size: 0.9rem; transition: 0.3s; 
+            padding: 10px 24px; background: var(--card-bg); border: 1px solid var(--card-border); 
+            border-radius: 30px; color: var(--text-secondary); font-size: 0.9rem; transition: 0.4s; 
         }
         .skill-pill:hover { 
-            border-color: var(--accent-blue); color: var(--accent-blue); 
-            background: rgba(0, 247, 255, 0.05); box-shadow: 0 0 15px rgba(0, 247, 255, 0.1);
+            border-color: var(--accent-orange); color: #fff; 
+            box-shadow: 0 0 15px rgba(255, 75, 31, 0.3);
+            transform: scale(1.05);
         }
 
-        /* WWDC Special Card */
-        .wwdc-card { 
-            background: linear-gradient(135deg, #1c1c1e, #000); 
-            border: 1px solid #333;
-            position: relative; overflow: hidden;
-            padding: 40px; border-radius: 24px;
-            display: flex; align-items: center; gap: 30px;
+        /* Section Headers */
+        h2 { font-size: 2.5rem; margin-bottom: 50px; font-weight: 700; letter-spacing: -1px; }
+        .section-header-line { width: 60px; height: 4px; background: var(--gradient-brand); margin-top: 10px; border-radius: 2px; }
+
+        /* Projects Grid */
+        .grid-section { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 30px; margin-bottom: 120px; }
+        .card { 
+            background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 24px; 
+            overflow: hidden; transition: 0.4s; display: flex; flex-direction: column; 
+            position: relative;
         }
-        .wwdc-card::before {
-            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
-            background: radial-gradient(circle, rgba(255, 215, 0, 0.1) 0%, transparent 60%);
-            pointer-events: none;
+        /* 给卡片加一点微弱的顶部蓝色反光 */
+        .card::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent-blue), transparent); opacity: 0.5;
         }
-        .wwdc-icon { font-size: 3.5rem; color: #fbbf24; text-shadow: 0 0 20px rgba(251, 191, 36, 0.4); }
+        .card:hover { transform: translateY(-10px); border-color: rgba(255,255,255,0.2); box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
+        
+        .card-content { padding: 30px; flex-grow: 1; display: flex; flex-direction: column; }
+        .card-title { font-size: 1.4rem; font-weight: 700; margin-bottom: 12px; color: #fff; }
+        .card-desc { font-size: 0.95rem; color: var(--text-secondary); margin-bottom: 25px; line-height: 1.7; flex-grow: 1; }
+        .tags { display: flex; gap: 8px; flex-wrap: wrap; margin-top: auto; }
+        .tag { font-size: 0.75rem; padding: 6px 14px; background: rgba(255,255,255,0.05); border-radius: 20px; color: var(--accent-blue); border: 1px solid rgba(0, 198, 255, 0.1); }
 
-        footer { text-align: center; padding: 80px 0 40px; border-top: 1px solid var(--card-border); color: #666; }
-        footer a { color: #888; transition: 0.3s; }
-        footer a:hover { color: var(--accent-orange); }
+        /* =========================================
+           Awards Section (Stacked Cards - Image 2) 
+           ========================================= */
+        .awards-container {
+            position: relative;
+            width: 100%;
+            height: 500px; /* Adjust based on content */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 120px;
+            perspective: 1000px;
+        }
 
-        /* Animations */
-        .fade-in-up { animation: fadeInUp 0.8s ease forwards; opacity: 0; transform: translateY(30px); }
-        @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+        .stack-wrapper {
+            position: relative;
+            width: 360px;
+            height: 460px;
+            cursor: pointer;
+        }
 
+        .award-card {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: #161618;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 24px;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.6s, box-shadow 0.6s;
+            overflow: hidden;
+            /* 类似于 iOS 的高斯模糊背景 */
+            backdrop-filter: blur(20px);
+        }
+
+        .award-card img {
+            width: 100%; height: 180px; object-fit: cover; border-radius: 16px; margin-bottom: 20px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .award-title { font-size: 1.4rem; font-weight: 700; color: #fff; margin-bottom: 10px; }
+        .award-desc { font-size: 0.9rem; color: #aaa; flex-grow: 1; }
+        .award-icon { 
+            position: absolute; bottom: 20px; right: 20px; 
+            font-size: 2rem; color: var(--accent-orange); opacity: 0.8; 
+        }
+        
+        .click-hint {
+            position: absolute; bottom: -40px; width: 100%; text-align: center;
+            color: var(--text-secondary); font-size: 0.9rem;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+
+
+        /* =========================================
+           Map Section 
+           ========================================= */
+        #map-section { margin-bottom: 120px; position: relative; }
+        #map { 
+            height: 500px; width: 100%; 
+            border-radius: 24px; 
+            border: 1px solid var(--card-border);
+            z-index: 1;
+            filter: grayscale(100%) invert(100%) contrast(120%); /* Dark Mode Map Trick */
+        }
+        /* Customizing Leaflet Popup to match theme */
+        .leaflet-popup-content-wrapper { background: #1a1a1a; color: #fff; border-radius: 12px; }
+        .leaflet-popup-tip { background: #1a1a1a; }
+
+        /* Timeline */
+        .timeline { border-left: 2px solid rgba(255, 255, 255, 0.1); margin-left: 10px; padding-left: 40px; margin-bottom: 100px; }
+        .timeline-item { position: relative; margin-bottom: 60px; }
+        .timeline-item::before { 
+            content: ''; position: absolute; left: -47px; top: 5px; width: 12px; height: 12px; 
+            background: var(--bg-color); 
+            border: 2px solid var(--accent-blue); /* Experience use Blue */
+            border-radius: 50%; 
+            box-shadow: 0 0 10px var(--accent-blue);
+            transition: 0.3s;
+        }
+        .timeline-item:hover::before { background: var(--accent-blue); box-shadow: 0 0 20px var(--accent-blue); }
+        
+        .role { font-size: 1.4rem; font-weight: 700; color: #fff; }
+        .company { color: var(--accent-blue); font-weight: 600; margin-bottom: 5px; display: block; font-size: 1.1rem;}
+        .date { font-size: 0.85rem; color: #666; font-family: monospace; margin-bottom: 15px; display: block; }
+        
+        .apple-photo-insert { margin-top: 20px; border-radius: 16px; overflow: hidden; border: 1px solid var(--card-border); max-width: 400px; }
+        .apple-photo-insert img { width: 100%; display: block; }
+
+        /* Footer */
+        footer { text-align: center; padding: 80px 0 40px; border-top: 1px solid var(--card-border); color: #666; font-size: 0.9rem; }
+        .social-links a { font-size: 1.5rem; margin: 0 15px; color: #666; transition: 0.3s; }
+        .social-links a:hover { color: #fff; transform: scale(1.2); }
+
+        /* Responsive */
         @media (max-width: 768px) {
-            .hero { flex-direction: column-reverse; text-align: center; padding-top: 100px; }
-            .hero-img-container { width: 220px; height: 220px; margin-bottom: 30px; }
+            .hero { flex-direction: column-reverse; text-align: center; padding-top: 40px; height: auto;}
+            .hero-img-container { width: 200px; height: 200px; margin: 0 auto; }
             h1 { font-size: 2.8rem; }
-            .cn-name { display: block; margin: 5px 0 0; font-size: 1.5rem; }
-            .wwdc-card { flex-direction: column; text-align: center; }
-            .nav-links { display: none; } /* Simplify for mobile */
+            .bio { margin: 0 auto 30px; border: none; padding: 0; }
+            .btn-group { justify-content: center; }
+            nav { flex-direction: column; gap: 15px; }
+            .nav-links a { margin: 0 10px; }
+            .stack-wrapper { width: 90%; height: 400px; }
         }
     </style>
 </head>
@@ -241,114 +237,321 @@
 
     <div class="container">
         
-        <nav class="fade-in-up" style="animation-delay: 0.1s;">
+        <nav>
             <div class="logo">Cody Qin</div>
             <div class="nav-links">
                 <a href="#about">About</a>
-                <a href="#footprint">Footprint</a>
-                <a href="#experience">Experience</a>
                 <a href="#projects">Projects</a>
                 <a href="#awards">Awards</a>
+                <a href="#map-section">Travel</a>
+                <a href="#experience">Experience</a>
             </div>
         </nav>
 
         <section class="hero" id="about">
-            <div class="hero-content fade-in-up" style="animation-delay: 0.2s;">
+            <div class="hero-content reveal">
                 <h1>
-                    Chenshuhao Qin
+                    Chenshuhao (Cody) Qin
                     <span class="cn-name">秦陈书豪</span>
                 </h1>
-                <span class="phonetic">/ Cody /</span>
+                <span class="phonetic">/ CHIN-CHEN-SHOO-HOW /</span>
 
                 <p class="bio">
-                    M.S. CS at <strong>USC</strong> | Duke Alum.<br>
-                    Developing <strong>Intelligent Systems</strong> at the intersection of research & reality. <br>
-                    Focus: Generative AI, RAG, and Scalable Software Architectures.
+                    M.S. CS Student at <strong>USC</strong> | Duke Graduate. <br>
+                    My world revolves around <strong>Intelligent Systems</strong> & <strong>Machine Learning</strong>. I build bridges between raw research and real-world deployment in healthcare, finance, and gaming.
                 </p>
-                
-                <div class="skill-list" style="margin-bottom: 30px;">
-                    <span class="skill-pill">Python & PyTorch</span>
-                    <span class="skill-pill">AIGC & RAG</span>
-                    <span class="skill-pill">Federated Learning</span>
-                    <span class="skill-pill">Swift / SwiftUI</span>
-                </div>
-
                 <div class="btn-group">
                     <a href="mailto:cody2363264403@gmail.com" class="btn">Get in Touch</a>
-                    <a href="https://github.com/CodyQin" target="_blank" class="btn-outline"><i class="fab fa-github"></i> GitHub</a>
-                    <a href="https://www.linkedin.com/in/chenshuhao-qin/" target="_blank" class="btn-outline"><i class="fab fa-linkedin"></i> LinkedIn</a>
+                    <a href="https://github.com/CodyQin" target="_blank" class="btn-outline">
+                        <i class="fab fa-github"></i> GitHub
+                    </a>
+                    <a href="https://www.linkedin.com/in/chenshuhao-qin/" target="_blank" class="btn-outline">
+                        <i class="fab fa-linkedin"></i> LinkedIn
+                    </a>
                 </div>
             </div>
-            <div class="hero-img-container fade-in-up" style="animation-delay: 0.4s;">
-                <img src="images/profile-pic.jpg" alt="Cody Qin" class="hero-img" onerror="this.src='https://ui-avatars.com/api/?name=Cody+Qin&background=111&color=fff&size=300'">
+            <div class="hero-img-container reveal">
+                <img src="images/profile-pic.jpg" alt="Cody Qin" class="hero-img">
+            </div>
+        </section>
+        
+        <section class="skill-section reveal">
+            <div class="skill-list">
+                <span class="skill-pill"><i class="fab fa-python"></i> Python & PyTorch</span>
+                <span class="skill-pill"><i class="fas fa-brain"></i> Generative AI (AIGC)</span>
+                <span class="skill-pill"><i class="fas fa-robot"></i> Agents & RAG</span>
+                <span class="skill-pill"><i class="fas fa-network-wired"></i> Federated Learning</span>
+                <span class="skill-pill"><i class="fab fa-swift"></i> Swift / SwiftUI</span>
+                <span class="skill-pill"><i class="fas fa-eye"></i> Computer Vision</span>
+            </div>
+        </section>
+        
+        <section id="projects">
+            <h2>Selected Works <div class="section-header-line"></div></h2>
+            <div class="grid-section">
+                
+                <div class="card reveal">
+                    <div class="card-content">
+                        <div class="card-title">Privacy-Preserving Edge IoT</div>
+                        <p class="card-desc">Developed a Federated Learning framework using BLE signals for occupancy estimation. Achieved 95% accuracy. <strong>Accepted at ACM SenSys 2024.</strong></p>
+                        <div class="tags"><span class="tag">Research</span><span class="tag">Federated Learning</span></div>
+                        <div style="margin-top:20px;">
+                            <a href="#" class="btn-outline" style="font-size:0.8rem; padding:8px 16px;">Paper PDF</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card reveal">
+                    <div class="card-content">
+                        <div class="card-title">ChatDKU (AI Campus Agent)</div>
+                        <p class="card-desc">Founding member of a RAG-based AI assistant. Built the pipeline and secure web interface. Deployed and used by university administrative offices.</p>
+                        <div class="tags"><span class="tag">RAG</span><span class="tag">LLM Deployment</span></div>
+                    </div>
+                </div>
+
+                <div class="card reveal">
+                    <div class="card-content">
+                        <div class="card-title">High-ROI AIGC Workflow</div>
+                        <p class="card-desc">Fine-tuned SDXL/Flux models for game marketing assets at G-bits. Boosted marketing ROI to 196% and attracted 117k new users.</p>
+                        <div class="tags"><span class="tag">Stable Diffusion</span><span class="tag">Industry</span></div>
+                    </div>
+                </div>
+                
             </div>
         </section>
 
-        <section id="footprint" class="fade-in-up" style="animation-delay: 0.5s;">
-            <h2><i class="fas fa-globe-asia"></i> Global Footprint</h2>
-            <div id="map-container"></div>
-            <div style="text-align:center; color:var(--text-secondary); font-size:0.9rem; margin-top:-80px; position:relative; z-index:5;">
-                Creating code and memories across 7 countries & 30+ cities.
+        <section id="awards" class="reveal">
+            <h2>Honors & Awards <div class="section-header-line" style="background: var(--accent-orange);"></div></h2>
+            <p style="margin-bottom: 40px; color: var(--text-secondary);">Tap the card to see the next one.</p>
+            
+            <div class="awards-container">
+                <div class="stack-wrapper" id="cardStack">
+                    </div>
+                <div class="click-hint"><i class="fas fa-hand-pointer"></i> Click to shuffle</div>
             </div>
         </section>
 
-        <section id="experience" class="fade-in-up" style="animation-delay: 0.6s;">
-            <h2><i class="fas fa-briefcase"></i> Experience Timeline</h2>
+        <section id="map-section" class="reveal">
+            <h2>Global Footprint <div class="section-header-line" style="background: linear-gradient(to right, #fff, #666);"></div></h2>
+            <p style="color: var(--text-secondary); margin-bottom: 20px;">From coding in Chengdu to researching in Durham. Mapping my journey across continents.</p>
+            <div id="map"></div>
+        </section>
+
+
+        <section id="experience" class="reveal">
+            <h2>Experience <div class="section-header-line" style="background: var(--accent-blue);"></div></h2>
             <div class="timeline">
                 
                 <div class="timeline-item">
                     <div class="role">Software Engineer Intern</div>
-                    <span class="company">Share Creators (Chengdu)</span>
-                    <span class="date">Nov 2025 - Present</span>
-                    <p style="color:var(--text-secondary)">Software systems development in creative tech.</p>
+                    <span class="company">Share Creators</span>
+                    <span class="date">Nov 2025 - Present | Chengdu</span>
+                    <p>Developing advanced software systems for creative tech assets.</p>
                 </div>
 
                 <div class="timeline-item">
                     <div class="role">AI Algorithm Engineer Intern</div>
                     <span class="company">Tsinghua University (Energy Internet Research Inst.)</span>
-                    <span class="date">Sep 2025 - Oct 2025</span>
-                    <p style="color:var(--text-secondary)">Implemented DeeplabV3+ for infrared fault diagnosis on power grids.</p>
+                    <span class="date">Sep 2025 - Oct 2025 | Chengdu</span>
+                    <p>Implemented DeeplabV3+ for fault diagnosis in power grid infrared imagery.</p>
                 </div>
 
                 <div class="timeline-item">
                     <div class="role">AI Engineer Intern</div>
-                    <span class="company">G-bits (Shenzhen)</span>
-                    <span class="date">May 2025 - Aug 2025</span>
-                    <p style="color:var(--text-secondary)">Built AIGC workflows (SDXL/Flux) boosting marketing ROI to 196%.</p>
+                    <span class="company">G-bits</span>
+                    <span class="date">May 2025 - Aug 2025 | Shenzhen</span>
+                    <p>Built Dify+RPA monitoring systems (98.85% acc) and led AIGC marketing workflows.</p>
                 </div>
-                
+
                 <div class="timeline-item">
                     <div class="role">AI Engineer Intern</div>
-                    <span class="company">AgBank of China R&D (Chengdu)</span>
-                    <span class="date">Aug 2024 - Sep 2024</span>
-                    <p style="color:var(--text-secondary)">Speech recognition platform using FunASR (Paraformer-zh).</p>
+                    <span class="company">Agricultural Bank of China (R&D)</span>
+                    <span class="date">Aug 2024 - Sep 2024 | Chengdu</span>
+                    <p>Real-time speech recognition platform using Paraformer-zh, improving accuracy by 18%.</p>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="role">Co-Founder (iOS Club)</div>
+                    <span class="company">U-Corp @ Apple</span>
+                    <span class="date">Sep 2022 - May 2023 | Kunshan</span>
+                    <div class="apple-photo-insert">
+                        <img src="images/apple-event.jpg" alt="Apple Club">
+                    </div>
                 </div>
 
             </div>
         </section>
 
-        <section id="projects" class="fade-in-up" style="animation-delay: 0.7s;">
-            <h2><i class="fas fa-flask"></i> Research & Projects</h2>
-            
-            <div class="wwdc-card" style="margin-bottom: 40px;">
-                <div class="wwdc-icon"><i class="fab fa-apple"></i></div>
-                <div>
-                   <div style="font-size: 1.6rem; font-weight: 700; color: #fff; margin-bottom: 5px;">Apple WWDC 2023 Scholar</div>
-                   <p style="color: var(--text-secondary); margin-bottom: 15px;">
-                       Global Winner. Developed "Ferryman-Puzzle", an interactive iOS game solving algorithmic logic puzzles.
-                   </p>
-                   <div class="project-links">
-                       <a href="https://github.com/wwdc/2023" target="_blank">View Code</a>
-                       <a href="#">News Coverage</a>
-                   </div>
-                </div>
-           </div>
+        <footer>
+            <div class="social-links">
+                <a href="#"><i class="fas fa-envelope"></i></a>
+                <a href="#"><i class="fab fa-linkedin"></i></a>
+                <a href="#"><i class="fab fa-github"></i></a>
+            </div>
+            <p style="margin-top: 20px;">© 2025 Chenshuhao Qin. Built with Code & Design.</p>
+        </footer>
 
-            <div class="grid-section">
-                <div class="card">
-                    <div class="card-content">
-                        <div class="card-title">Privacy-Preserving Edge IoT</div>
-                        <p class="card-desc">ACM SenSys 2024 Accepted. Federated Learning framework using BLE signals for occupancy estimation (95% acc).</p>
-                        <div class="tags"><span class="tag">Federated Learning</span><span class="tag">Edge AI</span></div>
-                        <div class="project-links" style="margin-top:15px">
-                            <a href="#"><i class="fas fa-paperclip
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+    <script>
+        // --- 1. Scroll Reveal Animation ---
+        const reveals = document.querySelectorAll('.reveal');
+        const revealOnScroll = () => {
+            const windowHeight = window.innerHeight;
+            const elementVisible = 100;
+            reveals.forEach((reveal) => {
+                const elementTop = reveal.getBoundingClientRect().top;
+                if (elementTop < windowHeight - elementVisible) {
+                    reveal.classList.add('active');
+                }
+            });
+        };
+        window.addEventListener('scroll', revealOnScroll);
+        revealOnScroll(); // Trigger once on load
+
+        // --- 2. Interactive Card Stack (Awards) ---
+        const awardsData = [
+            {
+                title: "Apple WWDC Scholar",
+                desc: "Selected as a global winner (1 of 13 in China). Developed 'Ferryman-Puzzle', an iOS algorithmic game.",
+                img: "images/cert-ucorp.jpg", // 替换为你的图片路径
+                icon: "fa-apple",
+                color: "#fff"
+            },
+            {
+                title: "Provincial Innovation",
+                desc: "Jiangsu College Student Innovation Training Program. Led the Edge-IoT privacy research project.",
+                img: "images/award-innovation.jpg",
+                icon: "fa-lightbulb",
+                color: "#FFD700"
+            },
+            {
+                title: "Alibaba AI Trainer",
+                desc: "Advanced Certification from Alibaba DAMO Academy for LLM data training.",
+                img: "images/cert-alibaba.jpg",
+                icon: "fa-brain",
+                color: "#ff6a00"
+            },
+            {
+                title: "Student Ambassador",
+                desc: "Duke Kunshan University Student Ambassador (2021-2022). Represented the university in major events.",
+                img: "images/award-ambassador.jpg",
+                icon: "fa-bullhorn",
+                color: "#00c6ff"
+            },
+            {
+                title: "Kendo Champion",
+                desc: "1st Place in DKU Kendo Course Ranking Competition (Male Group).",
+                img: "images/award-kendo.jpg",
+                icon: "fa-medal",
+                color: "#fff"
+            }
+        ];
+
+        const stackContainer = document.getElementById('cardStack');
+        
+        // 初始化卡片
+        function initCards() {
+            stackContainer.innerHTML = '';
+            awardsData.forEach((award, index) => {
+                const card = document.createElement('div');
+                card.className = 'award-card';
+                card.style.zIndex = awardsData.length - index;
+                // 初始堆叠效果：后面的卡片变小、变黑、位置下移
+                const scale = 1 - (index * 0.05);
+                const translateY = index * 15;
+                const brightness = 1 - (index * 0.2);
+                
+                card.style.transform = `translateY(${translateY}px) scale(${scale})`;
+                card.style.filter = `brightness(${brightness})`;
+                
+                card.innerHTML = `
+                    <img src="${award.img}" alt="${award.title}" onerror="this.src='https://via.placeholder.com/400x200/333/fff?text=${award.title}'">
+                    <div class="award-title">${award.title}</div>
+                    <div class="award-desc">${award.desc}</div>
+                    <i class="fab ${award.icon} award-icon" style="color:${award.color}"></i>
+                `;
+                
+                stackContainer.appendChild(card);
+            });
+        }
+
+        // 点击交互逻辑
+        stackContainer.addEventListener('click', () => {
+            // 把第一个移到最后
+            const firstItem = awardsData.shift();
+            awardsData.push(firstItem);
+            initCards(); // 重新渲染
+        });
+
+        initCards();
+
+
+        // --- 3. Leaflet Map Implementation ---
+        // 为了适应暗黑主题，我们需要使用深色的地图瓦片 (CartoDB Dark Matter)
+        const map = L.map('map').setView([30, 110], 3); // 初始视角，大概在中国中心稍微偏右，能看到亚洲
+
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+            subdomains: 'abcd',
+            maxZoom: 19
+        }).addTo(map);
+
+        // 地点数据 (坐标大约值)
+        const locations = [
+            // China
+            { name: "Chengdu, Sichuan", lat: 30.57, lng: 104.06 },
+            { name: "Guiyang, Guizhou", lat: 26.64, lng: 106.63 },
+            { name: "Yinchuan, Ningxia", lat: 38.48, lng: 106.23 },
+            { name: "Xining, Qinghai", lat: 36.61, lng: 101.77 },
+            { name: "Beijing", lat: 39.90, lng: 116.40 },
+            { name: "Shanghai", lat: 31.23, lng: 121.47 },
+            { name: "Chongqing", lat: 29.56, lng: 106.55 },
+            { name: "Hainan", lat: 19.19, lng: 109.74 },
+            { name: "Kunming, Yunnan", lat: 24.88, lng: 102.83 },
+            { name: "Guangzhou", lat: 23.12, lng: 113.26 },
+            { name: "Shenzhen", lat: 22.54, lng: 114.05 },
+            { name: "Hong Kong", lat: 22.31, lng: 114.16 },
+            { name: "Macau", lat: 22.19, lng: 113.54 },
+            
+            // Asia
+            { name: "Singapore", lat: 1.35, lng: 103.81 },
+            { name: "Bali, Indonesia", lat: -8.40, lng: 115.18 },
+            { name: "Thailand", lat: 13.75, lng: 100.50 },
+            { name: "Osaka, Japan", lat: 34.69, lng: 135.50 },
+            { name: "Tokyo, Japan", lat: 35.67, lng: 139.65 },
+            { name: "Kyoto, Japan", lat: 35.01, lng: 135.76 },
+
+            // USA
+            { name: "Los Angeles, USA", lat: 34.05, lng: -118.24 },
+            { name: "New York, USA", lat: 40.71, lng: -74.00 },
+            { name: "Durham, NC (Duke)", lat: 35.99, lng: -78.89 },
+            { name: "Philadelphia, USA", lat: 39.95, lng: -75.16 },
+            { name: "Hawaii, USA", lat: 19.89, lng: -155.58 },
+            { name: "Washington DC, USA", lat: 38.90, lng: -77.03 },
+
+            // Europe
+            { name: "France", lat: 46.22, lng: 2.21 },
+            { name: "Italy", lat: 41.87, lng: 12.56 },
+            { name: "Switzerland", lat: 46.81, lng: 8.22 }
+        ];
+
+        // 自定义标记图标 (橙色圆点)
+        const customIcon = L.divIcon({
+            className: 'custom-div-icon',
+            html: "<div style='background-color:#ff4b1f; width:10px; height:10px; border-radius:50%; box-shadow:0 0 8px #ff4b1f;'></div>",
+            iconSize: [10, 10],
+            iconAnchor: [5, 5]
+        });
+
+        locations.forEach(loc => {
+            L.marker([loc.lat, loc.lng], {icon: customIcon})
+             .addTo(map)
+             .bindPopup(`<b>${loc.name}</b>`);
+        });
+
+    </script>
+</body>
+</html>
