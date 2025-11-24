@@ -222,7 +222,6 @@
                 <span class="skill-pill"><i class="fab fa-python"></i> Python & PyTorch</span>
                 <span class="skill-pill"><i class="fas fa-brain"></i> Generative AI (AIGC)</span>
                 <span class="skill-pill"><i class="fas fa-robot"></i> Agents & RAG</span>
-                <span class="skill-pill"><i class="fas fa-network-wired"></i> Federated Learning</span>
                 <span class="skill-pill"><i class="fab fa-swift"></i> Swift / SwiftUI</span>
             </div>
         </section>
@@ -235,7 +234,6 @@
                         <div class="card-title">Privacy-Preserving Edge IoT</div>
                         <p class="card-desc">Developed a Federated Learning framework using BLE signals for occupancy estimation. Achieved 95% accuracy. <strong>Accepted at ACM SenSys 2024.</strong></p>
                         <div class="tags"><span class="tag">Research</span><span class="tag">Federated Learning</span></div>
-                        <div style="margin-top:20px;"><a href="#" class="btn-outline" style="font-size:0.8rem; padding:8px 16px;">Paper PDF</a></div>
                     </div>
                 </div>
                 <div class="card reveal">
@@ -266,7 +264,11 @@
                     <p class="wwdc-desc">
                         Selected as one of the global winners (1 of 13 from China) in the Apple Swift Student Challenge. Recognized for developing <strong>"Ferryman-Puzzle,"</strong> an interactive iOS algorithmic game built entirely with SwiftUI.
                     </p>
-                    <a href="https://github.com/CodyQin" target="_blank" class="btn" style="background: var(--accent-gold); color: #000;">View Project Code</a>
+                    <a href="https://github.com/CodyQin" target="_blank" class="btn" style="background: var(--accent-gold); color: #000; margin-bottom: 15px;">View Project Code</a>
+                    <div class="project-links" style="margin-top: 10px;">
+                        <a href="https://github.com/wwdc/2023" target="_blank"><i class="fab fa-github"></i> Project Code</a>
+                        <a href="https://www.ctdsb.net/c1673_202305/1770364.html" target="_blank" style="margin-left: 15px;"><i class="fas fa-newspaper"></i> News Coverage</a>
+                    </div>
                 </div>
             </div>
         </section>
@@ -434,20 +436,48 @@
             maxZoom: 19
         }).addTo(map);
 
-        const locations = [
-            { name: "Chengdu", lat: 30.57, lng: 104.06 },
-            { name: "Guiyang", lat: 26.64, lng: 106.63 },
+                const locations = [
+
+            // China
+
+            { name: "Chengdu, Sichuan", lat: 30.57, lng: 104.06 },
+            { name: "Guiyang, Guizhou", lat: 26.64, lng: 106.63 },
+            { name: "Yinchuan, Ningxia", lat: 38.48, lng: 106.23 },
+            { name: "Xining, Qinghai", lat: 36.61, lng: 101.77 },
             { name: "Beijing", lat: 39.90, lng: 116.40 },
             { name: "Shanghai", lat: 31.23, lng: 121.47 },
+            { name: "Chongqing", lat: 29.56, lng: 106.55 },
+            { name: "Hainan", lat: 19.19, lng: 109.74 },
+            { name: "Kunming, Yunnan", lat: 24.88, lng: 102.83 },
+            { name: "Guangzhou", lat: 23.12, lng: 113.26 },
             { name: "Shenzhen", lat: 22.54, lng: 114.05 },
             { name: "Hong Kong", lat: 22.31, lng: 114.16 },
+            { name: "Macau", lat: 22.19, lng: 113.54 },
+            { name: "Hangzhou, Zhejiang", lat: 30.27, lng: 120.15 },
+            { name: "Suzhou, Jiangsu", lat: 31.30, lng: 120.58 },
+            { name: "Nanjing, Jiangsu", lat: 32.04, lng: 118.79 },
+            { name: "Wuhan, Hubei", lat: 30.58, lng: 114.27 },
+            // Asia
             { name: "Singapore", lat: 1.35, lng: 103.81 },
-            { name: "Tokyo", lat: 35.67, lng: 139.65 },
-            { name: "Los Angeles", lat: 34.05, lng: -118.24 },
-            { name: "New York", lat: 40.71, lng: -74.00 },
-            { name: "Durham (Duke)", lat: 35.99, lng: -78.89 },
-            { name: "Paris", lat: 48.85, lng: 2.35 },
-            { name: "Zurich", lat: 47.37, lng: 8.54 }
+            { name: "Bali, Indonesia", lat: -8.40, lng: 115.18 },
+            { name: "Thailand", lat: 13.75, lng: 100.50 }
+            { name: "Osaka, Japan", lat: 34.69, lng: 135.50 },
+            { name: "Tokyo, Japan", lat: 35.67, lng: 139.65 },
+            { name: "Kyoto, Japan", lat: 35.01, lng: 135.76 },
+            // USA
+            { name: "Los Angeles, USA", lat: 34.05, lng: -118.24 },
+            { name: "New York, USA", lat: 40.71, lng: -74.00 },
+            { name: "Durham, NC (Duke)", lat: 35.99, lng: -78.89 },
+            { name: "Philadelphia, USA", lat: 39.95, lng: -75.16 },
+            { name: "Hawaii, USA", lat: 19.89, lng: -155.58 },
+            { name: "Washington DC, USA", lat: 38.90, lng: -77.03 },
+            // Europe
+            { name: "France", lat: 46.22, lng: 2.21 },
+            { name: "Italy", lat: 41.87, lng: 12.56 },
+            { name: "Switzerland", lat: 46.81, lng: 8.22 },
+            // Middle East
+            { name: "Dubai", lat: 25.20, lng: 55.27 }
+
         ];
 
         const customIcon = L.divIcon({
