@@ -9,7 +9,7 @@
     
     <style>
         :root {
-            /* 配色灵感来源于咖啡机图片 */
+            /* 配色灵感来源于咖啡机图片 (Image 1) */
             --bg-color: #050505; /* 极深的黑 */
             --card-bg: rgba(20, 20, 25, 0.6);
             --card-border: rgba(255, 255, 255, 0.08);
@@ -19,15 +19,15 @@
             /* 冷暖双色对撞 */
             --accent-blue: #00c6ff; /* 顶部冷光 */
             --accent-orange: #ff4b1f; /* 底部暖光 (岩浆色) */
-            --accent-gold: #FFD700; /* WWDC 专属金色 */
             
+            --gradient-text: linear-gradient(135deg, #fff 30%, #9ca3af 100%);
             --gradient-brand: linear-gradient(to right, var(--accent-blue), var(--accent-orange));
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif; }
         body { background-color: var(--bg-color); color: var(--text-main); line-height: 1.6; overflow-x: hidden; }
 
-        /* 动态背景光效 */
+        /* 动态背景光效 - 模拟照片中的光影 */
         .ambient-light {
             position: fixed;
             width: 100vw;
@@ -42,7 +42,7 @@
         .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
         a { text-decoration: none; color: inherit; transition: 0.3s; }
 
-        /* Scroll Reveal Animation */
+        /* Scroll Reveal Animation Class */
         .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s ease; }
         .reveal.active { opacity: 1; transform: translateY(0); }
 
@@ -58,11 +58,12 @@
         .hero { display: flex; align-items: center; gap: 60px; padding: 80px 0 100px; min-height: 80vh; }
         .hero-content { flex: 1; }
         
+        /* 头像框增加冷暖光边框 */
         .hero-img-container { 
             flex-shrink: 0; width: 300px; height: 300px; position: relative; 
             border-radius: 30px; 
             background: linear-gradient(135deg, var(--accent-blue), var(--accent-orange));
-            padding: 3px; 
+            padding: 3px; /* Border width */
             box-shadow: 0 20px 50px rgba(0,0,0,0.5);
         }
         .hero-img { width: 100%; height: 100%; object-fit: cover; border-radius: 27px; background: #111; display: block; }
@@ -94,32 +95,24 @@
             transform: scale(1.05);
         }
 
-        /* Common Section Styles */
+        /* Section Headers */
         h2 { font-size: 2.5rem; margin-bottom: 50px; font-weight: 700; letter-spacing: -1px; }
         .section-header-line { width: 60px; height: 4px; background: var(--gradient-brand); margin-top: 10px; border-radius: 2px; }
 
-        /* Grid Layout (Used for Projects and regular Awards) */
+        /* Projects Grid */
         .grid-section { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 30px; margin-bottom: 120px; }
-        
         .card { 
             background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 24px; 
             overflow: hidden; transition: 0.4s; display: flex; flex-direction: column; 
             position: relative;
-            height: 100%;
         }
+        /* 给卡片加一点微弱的顶部蓝色反光 */
         .card::before {
             content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 1px;
             background: linear-gradient(90deg, transparent, var(--accent-blue), transparent); opacity: 0.5;
         }
         .card:hover { transform: translateY(-10px); border-color: rgba(255,255,255,0.2); box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
         
-        .card-img-top {
-            width: 100%;
-            height: 180px;
-            object-fit: cover;
-            border-bottom: 1px solid var(--card-border);
-        }
-
         .card-content { padding: 30px; flex-grow: 1; display: flex; flex-direction: column; }
         .card-title { font-size: 1.4rem; font-weight: 700; margin-bottom: 12px; color: #fff; }
         .card-desc { font-size: 0.95rem; color: var(--text-secondary); margin-bottom: 25px; line-height: 1.7; flex-grow: 1; }
@@ -127,56 +120,76 @@
         .tag { font-size: 0.75rem; padding: 6px 14px; background: rgba(255,255,255,0.05); border-radius: 20px; color: var(--accent-blue); border: 1px solid rgba(0, 198, 255, 0.1); }
 
         /* =========================================
-           NEW: WWDC Special Feature Section (Apple Style)
+           Awards Section (Stacked Cards - Image 2) 
            ========================================= */
-        .wwdc-section {
-            /* 使用更高级的深色渐变和微妙的金色边框 */
-            background: linear-gradient(145deg, #1a1a1a 0%, #000 100%);
-            border-radius: 32px;
-            padding: 60px 50px;
-            margin-bottom: 120px;
-            border: 1px solid rgba(255, 215, 0, 0.15); /* 微妙的金色边框 */
-            display: flex;
-            align-items: center;
-            gap: 50px;
+        .awards-container {
             position: relative;
-            overflow: hidden;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
-        }
-        
-        /* 增加一个内部的金色光晕效果 */
-        .wwdc-section::before {
-            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
-            background: radial-gradient(circle, rgba(255, 215, 0, 0.08) 0%, transparent 60%);
-            pointer-events: none;
-        }
-
-        .wwdc-icon-container {
-            flex-shrink: 0;
+            width: 100%;
+            height: 500px; /* Adjust based on content */
             display: flex;
             justify-content: center;
             align-items: center;
-            width: 140px; height: 140px;
-            background: rgba(255,255,255,0.05);
-            border-radius: 50%;
-            border: 1px solid rgba(255, 215, 0, 0.2);
+            margin-bottom: 120px;
+            perspective: 1000px;
         }
-        .wwdc-icon { font-size: 5rem; color: var(--accent-gold); }
 
-        .wwdc-content { flex-grow: 1; z-index: 2;}
-        .wwdc-label { color: var(--accent-gold); font-weight: 600; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 15px; display: block; font-size: 0.9rem;}
-        .wwdc-title { font-size: 2.5rem; font-weight: 800; color: #fff; margin-bottom: 20px; line-height: 1.2; }
-        .wwdc-desc { font-size: 1.15rem; color: var(--text-secondary); max-width: 700px; margin-bottom: 30px;}
+        .stack-wrapper {
+            position: relative;
+            width: 360px;
+            height: 460px;
+            cursor: pointer;
+        }
 
-        /* Map Section */
+        .award-card {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: #161618;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 24px;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.6s, box-shadow 0.6s;
+            overflow: hidden;
+            /* 类似于 iOS 的高斯模糊背景 */
+            backdrop-filter: blur(20px);
+        }
+
+        .award-card img {
+            width: 100%; height: 180px; object-fit: cover; border-radius: 16px; margin-bottom: 20px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .award-title { font-size: 1.4rem; font-weight: 700; color: #fff; margin-bottom: 10px; }
+        .award-desc { font-size: 0.9rem; color: #aaa; flex-grow: 1; }
+        .award-icon { 
+            position: absolute; bottom: 20px; right: 20px; 
+            font-size: 2rem; color: var(--accent-orange); opacity: 0.8; 
+        }
+        
+        .click-hint {
+            position: absolute; bottom: -40px; width: 100%; text-align: center;
+            color: var(--text-secondary); font-size: 0.9rem;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+
+
+        /* =========================================
+           Map Section 
+           ========================================= */
         #map-section { margin-bottom: 120px; position: relative; }
         #map { 
             height: 500px; width: 100%; 
             border-radius: 24px; 
             border: 1px solid var(--card-border);
             z-index: 1;
+            filter: grayscale(100%) invert(100%) contrast(120%); /* Dark Mode Map Trick */
         }
-        /* Leaflet Popup Styling */
+        /* Customizing Leaflet Popup to match theme */
         .leaflet-popup-content-wrapper { background: #1a1a1a; color: #fff; border-radius: 12px; }
         .leaflet-popup-tip { background: #1a1a1a; }
 
@@ -186,7 +199,7 @@
         .timeline-item::before { 
             content: ''; position: absolute; left: -47px; top: 5px; width: 12px; height: 12px; 
             background: var(--bg-color); 
-            border: 2px solid var(--accent-blue); 
+            border: 2px solid var(--accent-blue); /* Experience use Blue */
             border-radius: 50%; 
             box-shadow: 0 0 10px var(--accent-blue);
             transition: 0.3s;
@@ -214,9 +227,7 @@
             .btn-group { justify-content: center; }
             nav { flex-direction: column; gap: 15px; }
             .nav-links a { margin: 0 10px; }
-            /* WWDC 响应式适配 */
-            .wwdc-section { flex-direction: column; text-align: center; padding: 40px 30px; gap: 30px; }
-            .wwdc-icon-container { margin: 0 auto; }
+            .stack-wrapper { width: 90%; height: 400px; }
         }
     </style>
 </head>
@@ -309,33 +320,20 @@
             </div>
         </section>
 
-        <section class="reveal" id="wwdc-feature">
-            <div class="wwdc-section">
-                <div class="wwdc-icon-container">
-                    <i class="fab fa-apple wwdc-icon"></i>
-                </div>
-                <div class="wwdc-content">
-                    <span class="wwdc-label">Global Winner Selection</span>
-                    <h3 class="wwdc-title">Apple WWDC Scholar (2023)</h3>
-                    <p class="wwdc-desc">
-                        Selected as one of the global winners (1 of 13 from China) in the Apple Swift Student Challenge. Recognized for developing <strong>"Ferryman-Puzzle,"</strong> an interactive iOS algorithmic game built entirely with SwiftUI.
-                    </p>
-                    <a href="https://github.com/CodyQin" target="_blank" class="btn" style="background: var(--accent-gold);">View Project Code</a>
-                </div>
-            </div>
-        </section>
-
-
         <section id="awards" class="reveal">
-            <h2>Other Honors & Certifications <div class="section-header-line" style="background: var(--accent-orange);"></div></h2>
+            <h2>Honors & Awards <div class="section-header-line" style="background: var(--accent-orange);"></div></h2>
+            <p style="margin-bottom: 40px; color: var(--text-secondary);">Tap the card to see the next one.</p>
             
-            <div class="grid-section" id="awardsGrid">
-                </div>
+            <div class="awards-container">
+                <div class="stack-wrapper" id="cardStack">
+                    </div>
+                <div class="click-hint"><i class="fas fa-hand-pointer"></i> Click to shuffle</div>
+            </div>
         </section>
 
         <section id="map-section" class="reveal">
             <h2>Global Footprint <div class="section-header-line" style="background: linear-gradient(to right, #fff, #666);"></div></h2>
-            <p style="color: var(--text-secondary); margin-bottom: 20px;">From Chengdu to Los Angeles. Mapping my journey across continents.</p>
+            <p style="color: var(--text-secondary); margin-bottom: 20px;">From coding in Chengdu to researching in Durham. Mapping my journey across continents.</p>
             <div id="map"></div>
         </section>
 
@@ -386,3 +384,174 @@
 
         <footer>
             <div class="social-links">
+                <a href="#"><i class="fas fa-envelope"></i></a>
+                <a href="#"><i class="fab fa-linkedin"></i></a>
+                <a href="#"><i class="fab fa-github"></i></a>
+            </div>
+            <p style="margin-top: 20px;">© 2025 Chenshuhao Qin. Built with Code & Design.</p>
+        </footer>
+
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+    <script>
+        // --- 1. Scroll Reveal Animation ---
+        const reveals = document.querySelectorAll('.reveal');
+        const revealOnScroll = () => {
+            const windowHeight = window.innerHeight;
+            const elementVisible = 100;
+            reveals.forEach((reveal) => {
+                const elementTop = reveal.getBoundingClientRect().top;
+                if (elementTop < windowHeight - elementVisible) {
+                    reveal.classList.add('active');
+                }
+            });
+        };
+        window.addEventListener('scroll', revealOnScroll);
+        revealOnScroll(); // Trigger once on load
+
+        // --- 2. Interactive Card Stack (Awards) ---
+        const awardsData = [
+            {
+                title: "Apple WWDC Scholar",
+                desc: "Selected as a global winner (1 of 13 in China). Developed 'Ferryman-Puzzle', an iOS algorithmic game.",
+                img: "images/cert-ucorp.jpg", // 替换为你的图片路径
+                icon: "fa-apple",
+                color: "#fff"
+            },
+            {
+                title: "Provincial Innovation",
+                desc: "Jiangsu College Student Innovation Training Program. Led the Edge-IoT privacy research project.",
+                img: "images/award-innovation.jpg",
+                icon: "fa-lightbulb",
+                color: "#FFD700"
+            },
+            {
+                title: "Alibaba AI Trainer",
+                desc: "Advanced Certification from Alibaba DAMO Academy for LLM data training.",
+                img: "images/cert-alibaba.jpg",
+                icon: "fa-brain",
+                color: "#ff6a00"
+            },
+            {
+                title: "Student Ambassador",
+                desc: "Duke Kunshan University Student Ambassador (2021-2022). Represented the university in major events.",
+                img: "images/award-ambassador.jpg",
+                icon: "fa-bullhorn",
+                color: "#00c6ff"
+            },
+            {
+                title: "Kendo Champion",
+                desc: "1st Place in DKU Kendo Course Ranking Competition (Male Group).",
+                img: "images/award-kendo.jpg",
+                icon: "fa-medal",
+                color: "#fff"
+            }
+        ];
+
+        const stackContainer = document.getElementById('cardStack');
+        
+        // 初始化卡片
+        function initCards() {
+            stackContainer.innerHTML = '';
+            awardsData.forEach((award, index) => {
+                const card = document.createElement('div');
+                card.className = 'award-card';
+                card.style.zIndex = awardsData.length - index;
+                // 初始堆叠效果：后面的卡片变小、变黑、位置下移
+                const scale = 1 - (index * 0.05);
+                const translateY = index * 15;
+                const brightness = 1 - (index * 0.2);
+                
+                card.style.transform = `translateY(${translateY}px) scale(${scale})`;
+                card.style.filter = `brightness(${brightness})`;
+                
+                card.innerHTML = `
+                    <img src="${award.img}" alt="${award.title}" onerror="this.src='https://via.placeholder.com/400x200/333/fff?text=${award.title}'">
+                    <div class="award-title">${award.title}</div>
+                    <div class="award-desc">${award.desc}</div>
+                    <i class="fab ${award.icon} award-icon" style="color:${award.color}"></i>
+                `;
+                
+                stackContainer.appendChild(card);
+            });
+        }
+
+        // 点击交互逻辑
+        stackContainer.addEventListener('click', () => {
+            // 把第一个移到最后
+            const firstItem = awardsData.shift();
+            awardsData.push(firstItem);
+            initCards(); // 重新渲染
+        });
+
+        initCards();
+
+
+        // --- 3. Leaflet Map Implementation ---
+        // 为了适应暗黑主题，我们需要使用深色的地图瓦片 (CartoDB Dark Matter)
+        const map = L.map('map').setView([30, 110], 3); // 初始视角，大概在中国中心稍微偏右，能看到亚洲
+
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+            subdomains: 'abcd',
+            maxZoom: 19
+        }).addTo(map);
+
+        // 地点数据 (坐标大约值)
+        const locations = [
+            // China
+            { name: "Chengdu, Sichuan", lat: 30.57, lng: 104.06 },
+            { name: "Guiyang, Guizhou", lat: 26.64, lng: 106.63 },
+            { name: "Yinchuan, Ningxia", lat: 38.48, lng: 106.23 },
+            { name: "Xining, Qinghai", lat: 36.61, lng: 101.77 },
+            { name: "Beijing", lat: 39.90, lng: 116.40 },
+            { name: "Shanghai", lat: 31.23, lng: 121.47 },
+            { name: "Chongqing", lat: 29.56, lng: 106.55 },
+            { name: "Hainan", lat: 19.19, lng: 109.74 },
+            { name: "Kunming, Yunnan", lat: 24.88, lng: 102.83 },
+            { name: "Guangzhou", lat: 23.12, lng: 113.26 },
+            { name: "Shenzhen", lat: 22.54, lng: 114.05 },
+            { name: "Hong Kong", lat: 22.31, lng: 114.16 },
+            { name: "Macau", lat: 22.19, lng: 113.54 },
+            
+            // Asia
+            { name: "Singapore", lat: 1.35, lng: 103.81 },
+            { name: "Bali, Indonesia", lat: -8.40, lng: 115.18 },
+            { name: "Thailand", lat: 13.75, lng: 100.50 },
+            { name: "Osaka, Japan", lat: 34.69, lng: 135.50 },
+            { name: "Tokyo, Japan", lat: 35.67, lng: 139.65 },
+            { name: "Kyoto, Japan", lat: 35.01, lng: 135.76 },
+
+            // USA
+            { name: "Los Angeles, USA", lat: 34.05, lng: -118.24 },
+            { name: "New York, USA", lat: 40.71, lng: -74.00 },
+            { name: "Durham, NC (Duke)", lat: 35.99, lng: -78.89 },
+            { name: "Philadelphia, USA", lat: 39.95, lng: -75.16 },
+            { name: "Hawaii, USA", lat: 19.89, lng: -155.58 },
+            { name: "Washington DC, USA", lat: 38.90, lng: -77.03 },
+
+            // Europe
+            { name: "France", lat: 46.22, lng: 2.21 },
+            { name: "Italy", lat: 41.87, lng: 12.56 },
+            { name: "Switzerland", lat: 46.81, lng: 8.22 }
+        ];
+
+        // 自定义标记图标 (橙色圆点)
+        const customIcon = L.divIcon({
+            className: 'custom-div-icon',
+            html: "<div style='background-color:#ff4b1f; width:10px; height:10px; border-radius:50%; box-shadow:0 0 8px #ff4b1f;'></div>",
+            iconSize: [10, 10],
+            iconAnchor: [5, 5]
+        });
+
+        locations.forEach(loc => {
+            L.marker([loc.lat, loc.lng], {icon: customIcon})
+             .addTo(map)
+             .bindPopup(`<b>${loc.name}</b>`);
+        });
+
+    </script>
+</body>
+</html>
