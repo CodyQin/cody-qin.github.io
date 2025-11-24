@@ -333,7 +333,7 @@
 
         <section id="map-section" class="reveal">
             <h2>Global Footprint <div class="section-header-line" style="background: linear-gradient(to right, #fff, #666);"></div></h2>
-            <p style="color: var(--text-secondary); margin-bottom: 20px;">From coding in Chengdu to researching in Durham. Mapping my journey across continents.</p>
+            <p style="color: var(--text-secondary); margin-bottom: 20px;">From Home of Pandas to La La Land. Mapping my journey across continents.</p>
             <div id="map"></div>
         </section>
 
@@ -411,13 +411,54 @@
         window.addEventListener('scroll', revealOnScroll);
         revealOnScroll(); // Trigger once on load
 
+
+        #新的苹果奖项展示
+        .wwdc-section {
+            /* 使用更高级的深色渐变和微妙的金色边框 */
+            background: linear-gradient(145deg, #1a1a1a 0%, #000 100%);
+            border-radius: 32px;
+            padding: 60px 50px;
+            margin-bottom: 120px;
+            border: 1px solid rgba(255, 215, 0, 0.15); /* 微妙的金色边框 */
+            display: flex;
+            align-items: center;
+            gap: 50px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+        }
+        
+        /* 增加一个内部的金色光晕效果 */
+        .wwdc-section::before {
+            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+            background: radial-gradient(circle, rgba(255, 215, 0, 0.08) 0%, transparent 60%);
+            pointer-events: none;
+        }
+
+        .wwdc-icon-container {
+            flex-shrink: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 140px; height: 140px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 50%;
+            border: 1px solid rgba(255, 215, 0, 0.2);
+        }
+        .wwdc-icon { font-size: 5rem; color: var(--accent-gold); }
+
+        .wwdc-content { flex-grow: 1; z-index: 2;}
+        .wwdc-label { color: var(--accent-gold); font-weight: 600; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 15px; display: block; font-size: 0.9rem;}
+        .wwdc-title { font-size: 2.5rem; font-weight: 800; color: #fff; margin-bottom: 20px; line-height: 1.2; }
+        .wwdc-desc { font-size: 1.15rem; color: var(--text-secondary); max-width: 700px; margin-bottom: 30px;}
+
         // --- 2. Interactive Card Stack (Awards) ---
         const awardsData = [
             {
-                title: "Apple WWDC Scholar",
-                desc: "Selected as a global winner (1 of 13 in China). Developed 'Ferryman-Puzzle', an iOS algorithmic game.",
-                img: "images/cert-ucorp.jpg", // 替换为你的图片路径
-                icon: "fa-apple",
+                title: "U-Corp Innovation Lab @ Apple",
+                desc: "Certificate of Achievement for the iOS Project at Duke Kunshan University.",
+                img: "images/cert-ucorp.jpg", 
+                icon: "fa-laptop-code", // 换了个更贴切的图标
                 color: "#fff"
             },
             {
@@ -489,17 +530,15 @@
         initCards();
 
 
-        // --- 3. Leaflet Map Implementation ---
-        // 为了适应暗黑主题，我们需要使用深色的地图瓦片 (CartoDB Dark Matter)
-        const map = L.map('map').setView([30, 110], 3); // 初始视角，大概在中国中心稍微偏右，能看到亚洲
+    // --- 3. Leaflet Map (Colored) ---
+        // 使用标准的 OpenStreetMap 彩色图层
+        const map = L.map('map').setView([30, 110], 3); 
 
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-            subdomains: 'abcd',
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
             maxZoom: 19
         }).addTo(map);
 
-        // 地点数据 (坐标大约值)
         const locations = [
             // China
             { name: "Chengdu, Sichuan", lat: 30.57, lng: 104.06 },
@@ -538,12 +577,12 @@
             { name: "Switzerland", lat: 46.81, lng: 8.22 }
         ];
 
-        // 自定义标记图标 (橙色圆点)
+        // 保持使用橙色圆点标记，在彩色地图上也很显眼
         const customIcon = L.divIcon({
             className: 'custom-div-icon',
-            html: "<div style='background-color:#ff4b1f; width:10px; height:10px; border-radius:50%; box-shadow:0 0 8px #ff4b1f;'></div>",
-            iconSize: [10, 10],
-            iconAnchor: [5, 5]
+            html: "<div style='background-color:#ff4b1f; width:10px; height:10px; border-radius:50%; box-shadow:0 0 5px rgba(0,0,0,0.5); border:1px solid #fff;'></div>",
+            iconSize: [12, 12],
+            iconAnchor: [6, 6]
         });
 
         locations.forEach(loc => {
